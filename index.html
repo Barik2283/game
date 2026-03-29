@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🎰 CASINO ROYALE 🎰</title>
+    
+    <!-- Yandex Games SDK -->
+    <script src="https://yandex.ru/games/sdk/v2"></script>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="yandex-manifest.json">
+    
+    <!-- Meta tags for Yandex Games -->
+    <meta name="description" content="Казино Рояль - лучшие азартные игры: слоты, рулетка, покер, блэкджек, кости и многое другое!">
+    <meta name="keywords" content="казино, слоты, рулетка, покер, блэкджек, азартные игры">
+    <meta name="theme-color" content="#1a1a2e">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="🎰 CASINO ROYALE 🎰">
+    <meta property="og:description" content="Лучшие азартные игры в одном месте!">
+    <meta property="og:type" content="website">
+    
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-spinner">🎰</div>
+        <p>Загрузка казино...</p>
+    </div>
+
+    <!-- Age Warning Modal -->
+    <div class="modal active" id="ageWarningModal">
+        <div class="modal-content age-warning">
+            <h2>⚠️ ВНИМАНИЕ ⚠️</h2>
+            <p class="warning-text">Игра предназначена только для совершеннолетних!</p>
+            <p>Эта игра использует виртуальную валюту без реальной ценности.</p>
+            <p>Все выигрыши являются игровыми и не могут быть конвертированы в реальные деньги.</p>
+            <div class="modal-buttons">
+                <button class="modal-btn confirm" onclick="confirmAge()">✅ МНЕ ЕСТЬ 18 ЛЕТ</button>
+            </div>
+        </div>
+    </div>
+
+    <header class="header">
+        <h1>🎰 CASINO ROYALE 🎰</h1>
+    </header>
+
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-label">💰 БАЛАНС</div>
+            <div class="stat-value" id="balance">5000</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">🏆 ДЖЕКПОТ</div>
+            <div class="stat-value" id="jackpot">50000</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">🎲 ПОСЛЕДНИЙ ВЫИГРЫШ</div>
+            <div class="stat-value" id="lastWin">0</div>
+        </div>
+        <div class="stat-item" id="credit-stat" style="display: none;">
+            <div class="stat-label">💳 ДОЛГ</div>
+            <div class="stat-value" id="credit-display" style="color: #e74c3c;">0</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">⚡ ЭНЕРГИЯ</div>
+            <div class="intoxication-container">
+                <div class="intoxication-bar" id="intoxication-bar" style="width: 0%;"></div>
+                <span class="intoxication-value" id="intoxication-value">0%</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <nav class="games-nav">
+            <button class="game-btn active" onclick="showGame('slots')">
+                <span>🎰</span> Слоты
+            </button>
+            <button class="game-btn" onclick="showGame('roulette')">
+                <span>🎡</span> Рулетка
+            </button>
+            <button class="game-btn" onclick="showGame('cards')">
+                <span>🃏</span> Карточки
+            </button>
+            <button class="game-btn" onclick="showGame('dice')">
+                <span>🎲</span> Кости
+            </button>
+            <button class="game-btn" onclick="showGame('mines')">
+                <span>💣</span> Мины
+            </button>
+            <button class="game-btn" onclick="showGame('wheel')">
+                <span>🎯</span> Колесо
+            </button>
+            <button class="game-btn" onclick="showGame('blackjack')">
+                <span>🃏</span> Блэкджек
+            </button>
+            <button class="game-btn" onclick="showGame('poker')">
+                <span>🂡</span> Покер
+            </button>
+        </nav>
+
+        <main class="game-area">
+            <!-- Slots Game -->
+            <div id="game-slots" class="game-container">
+                <h2 class="game-title">🎰 ФРУКТОВЫЕ СЛОТЫ</h2>
+                <div class="slot-container">
+                    <div class="bet-controls">
+                        <button class="bet-btn" onclick="changeBet('slots', -50)">-</button>
+                        <input type="number" class="bet-input" id="bet-input-slots" value="100" onchange="setBet('slots', this.value)">
+                        <button class="bet-btn" onclick="changeBet('slots', 50)">+</button>
+                        <button class="bet-btn" onclick="maxBet('slots')">MAX</button>
+                    </div>
+                    <div class="slot-reels">
+                        <div class="slot-reel" id="slot-reel-1">🍎</div>
+                        <div class="slot-reel" id="slot-reel-2">🍎</div>
+                        <div class="slot-reel" id="slot-reel-3">🍎</div>
+                        <div class="slot-reel" id="slot-reel-4">🍎</div>
+                        <div class="slot-reel" id="slot-reel-5">🍎</div>
+                    </div>
+                    <button class="action-btn primary" id="spin-btn" onclick="spinSlots()">🎰 КРУТИТЬ</button>
+                    <div class="message" id="message-slots"></div>
+
+                    <div class="paytable">
+                        <h3>📊 ТАБЛИЦА ВЫПЛАТ</h3>
+                        <div class="paytable-grid">
+                            <div class="paytable-item">
+                                <div class="paytable-symbol">🍎</div>
+                                <div class="paytable-value">x5 = 100x</div>
+                            </div>
+                            <div class="paytable-item">
+                                <div class="paytable-symbol">🍏</div>
+                                <div class="paytable-value">x5 = 200x</div>
+                            </div>
+                            <div class="paytable-item">
+                                <div class="paytable-symbol">🍌</div>
+                                <div class="paytable-value">x5 = 500x</div>
+                            </div>
+                            <div class="paytable-item">
+                                <div class="paytable-symbol">🍇</div>
+                                <div class="paytable-value">x5 = 1000x</div>
+                            </div>
+                            <div class="paytable-item">
+                                <div class="paytable-symbol">🌿</div>
+                                <div class="paytable-value">x5 = 2500x</div>
+                            </div>
+                            <div class="paytable-item">
+                                <div class="paytable-symbol">💎</div>
+                                <div class="paytable-value">x5 = ДЖЕКПОТ!</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Roulette Game -->
+            <div id="game-roulette" class="game-container" style="display: none;">
+                <h2 class="game-title">🎡 РУЛЕТКА</h2>
+                <div class="roulette-container">
+                    <div class="roulette-pointer"></div>
+                    <div class="roulette-wheel" id="roulette-wheel"></div>
+                    <div class="roulette-result" id="roulette-result">Сделайте ставку</div>
+                    <div class="bet-controls">
+                        <button class="bet-btn" onclick="changeBet('roulette', -50)">-</button>
+                        <input type="number" class="bet-input" id="bet-input-roulette" value="100" onchange="setBet('roulette', this.value)">
+                        <button class="bet-btn" onclick="changeBet('roulette', 50)">+</button>
+                        <button class="bet-btn" onclick="maxBet('roulette')">MAX</button>
+                    </div>
+                    <div class="roulette-bets">
+                        <button class="roulette-bet-btn red" onclick="selectRouletteBet('red')">🔴 КРАСНОЕ (x2)</button>
+                        <button class="roulette-bet-btn green" onclick="selectRouletteBet('green')">🟢 ЗЕЛЁНОЕ (x14)</button>
+                        <button class="roulette-bet-btn black" onclick="selectRouletteBet('black')">⚫ ЧЁРНОЕ (x2)</button>
+                    </div>
+                    <button class="action-btn primary" id="roulette-spin-btn" onclick="spinRoulette()">🎡 КРУТИТЬ</button>
+                    <div class="message" id="message-roulette"></div>
+                </div>
+            </div>
+
+            <!-- Cards Game -->
+            <div id="game-cards" class="game-container" style="display: none;">
+                <h2 class="game-title">🃏 УГАДАЙ КАРТУ</h2>
+                <div class="cards-container">
+                    <div class="bet-controls">
+                        <button class="bet-btn" onclick="changeBet('cards', -50)">-</button>
+                        <input type="number" class="bet-input" id="bet-input-cards" value="100" onchange="setBet('cards', this.value)">
+                        <button class="bet-btn" onclick="changeBet('cards', 50)">+</button>
+                        <button class="bet-btn" onclick="maxBet('cards')">MAX</button>
+                    </div>
+                    <div class="cards-area" id="cards-area">
+                        <div class="card hidden" onclick="selectCard(0)"></div>
+                        <div class="card hidden" onclick="selectCard(1)"></div>
+                        <div class="card hidden" onclick="selectCard(2)"></div>
+                    </div>
+                    <div class="dice-bet-controls">
+                        <button class="dice-bet-btn" onclick="selectCardColor('red')">🔴 КРАСНЫЕ</button>
+                        <button class="dice-bet-btn" onclick="selectCardColor('black')">⚫ ЧЁРНЫЕ</button>
+                    </div>
+                    <button class="action-btn primary" onclick="playCards()">🃏 ИГРАТЬ</button>
+                    <div class="message" id="message-cards"></div>
+                </div>
+            </div>
+
+            <!-- Dice Game -->
+            <div id="game-dice" class="game-container" style="display: none;">
+                <h2 class="game-title">🎲 КОСТИ</h2>
+                <div class="dice-container">
+                    <div class="bet-controls">
+                        <button class="bet-btn" onclick="changeBet('dice', -50)">-</button>
+                        <input type="number" class="bet-input" id="bet-input-dice" value="100" onchange="setBet('dice', this.value)">
+                        <button class="bet-btn" onclick="changeBet('dice', 50)">+</button>
+                        <button class="bet-btn" onclick="maxBet('dice')">MAX</button>
+                    </div>
+                    <div class="dice-area">
+                        <div class="dice" id="dice-1">🎲</div>
+                        <div class="dice" id="dice-2">🎲</div>
+                    </div>
+                    <div class="dice-bet-controls">
+                        <button class="dice-bet-btn" onclick="selectDiceBet('under7')">Меньше 7 (x2)</button>
+                        <button class="dice-bet-btn" onclick="selectDiceBet('exactly7')">Ровно 7 (x5)</button>
+                        <button class="dice-bet-btn" onclick="selectDiceBet('over7')">Больше 7 (x2)</button>
+                    </div>
+                    <button class="action-btn primary" onclick="rollDice()">🎲 БРОСИТЬ</button>
+                    <div class="message" id="message-dice"></div>
+                </div>
+            </div>
+
+            <!-- Mines Game -->
+            <div id="game-mines" class="game-container" style="display: none;">
+                <h2 class="game-title">💣 МИНЫ</h2>
+                <div class="dice-container">
+                    <div class="bet-controls">
+                        <button class="bet-btn" onclick="changeBet('mines', -50)">-</button>
+                        <input type="number" class="bet-input" id="bet-input-mines" value="100" onchange="setBet('mines', this.value)">
+                        <button class="bet-btn" onclick="changeBet('mines', 50)">+</button>
+                        <button class="bet-btn" onclick="maxBet('mines')">MAX</button>
+                    </div>
+                    <div class="dice-bet-controls">
+                        <button class="dice-bet-btn" onclick="setMinesCount(3)">3 Мины</button>
+                        <button class="dice-bet-btn" onclick="setMinesCount(5)">5 Мин</button>
+                        <button class="dice-bet-btn" onclick="setMinesCount(8)">8 Мин</button>
+                    </div>
+                    <div class="mines-grid" id="mines-grid"></div>
+                    <button class="action-btn primary" onclick="startMines()">💣 НАЧАТЬ ИГРУ</button>
+                    <button class="action-btn cashout" onclick="cashoutMines()" id="cashout-btn" style="display: none;">💰 ЗАБРАТЬ</button>
+                    <div class="message" id="message-mines"></div>
+                </div>
+            </div>
+
+            <!-- Wheel Game -->
+            <div id="game-wheel" class="game-container" style="display: none;">
+                <h2 class="game-title">🎯 КОЛЕСО ФОРТУНЫ</h2>
+                <div class="wheel-container">
+                    <div class="wheel" id="wheel">
+                        <div class="wheel-segment" style="--i:0;--color:#e74c3c">x2</div>
+                        <div class="wheel-segment" style="--i:1;--color:#3498db">x3</div>
+                        <div class="wheel-segment" style="--i:2;--color:#27ae60">x5</div>
+                        <div class="wheel-segment" style="--i:3;--color:#9b59b6">x0</div>
+                        <div class="wheel-segment" style="--i:4;--color:#f39c12">x10</div>
+                        <div class="wheel-segment" style="--i:5;--color:#1abc9c">x2</div>
+                        <div class="wheel-segment" style="--i:6;--color:#e91e63">x3</div>
+                        <div class="wheel-segment" style="--i:7;--color:#00bcd4">x5</div>
+                    </div>
+                    <div class="wheel-pointer"></div>
+                </div>
+                <div class="bet-controls">
+                    <button class="bet-btn" onclick="changeBet('wheel', -50)">-</button>
+                    <input type="number" class="bet-input" id="bet-input-wheel" value="100" onchange="setBet('wheel', this.value)">
+                    <button class="bet-btn" onclick="changeBet('wheel', 50)">+</button>
+                    <button class="bet-btn" onclick="maxBet('wheel')">MAX</button>
+                </div>
+                <button class="action-btn primary" onclick="spinWheel()">🎯 КРУТИТЬ КОЛЕСО</button>
+                <div class="message" id="message-wheel"></div>
+            </div>
+
+            <!-- Blackjack Game -->
+            <div id="game-blackjack" class="game-container" style="display: none;">
+                <h2 class="game-title">🃏 БЛЭКДЖЕК</h2>
+                <div class="blackjack-container">
+                    <div class="bet-controls">
+                        <button class="bet-btn" onclick="changeBet('blackjack', -50)">-</button>
+                        <input type="number" class="bet-input" id="bet-input-blackjack" value="100" onchange="setBet('blackjack', this.value)">
+                        <button class="bet-btn" onclick="changeBet('blackjack', 50)">+</button>
+                        <button class="bet-btn" onclick="maxBet('blackjack')">MAX</button>
+                    </div>
+                    <div class="blackjack-area">
+                        <div class="hand-area">
+                            <h3>🏠 ДИЛЕР</h3>
+                            <div class="cards-area" id="dealer-cards"></div>
+                            <div class="hand-total" id="dealer-total">0</div>
+                        </div>
+                        <div class="hand-area">
+                            <h3>👤 ВЫ</h3>
+                            <div class="cards-area" id="player-cards"></div>
+                            <div class="hand-total" id="player-total">0</div>
+                        </div>
+                    </div>
+                    <div class="blackjack-controls">
+                        <button class="action-btn primary" onclick="startBlackjack()">🎴 РАЗДАТЬ</button>
+                        <button class="action-btn" onclick="hit()" id="hit-btn" disabled>✋ ЕЩЁ</button>
+                        <button class="action-btn" onclick="stand()" id="stand-btn" disabled>✋ ХВАТИТ</button>
+                    </div>
+                    <div class="message" id="message-blackjack"></div>
+                </div>
+            </div>
+
+            <!-- Poker Game -->
+            <div id="game-poker" class="game-container" style="display: none;">
+                <h2 class="game-title">🂡 ВИДЕО ПОКЕР</h2>
+                <div class="poker-container">
+                    <div class="bet-controls">
+                        <button class="bet-btn" onclick="changeBet('poker', -50)">-</button>
+                        <input type="number" class="bet-input" id="bet-input-poker" value="100" onchange="setBet('poker', this.value)">
+                        <button class="bet-btn" onclick="changeBet('poker', 50)">+</button>
+                        <button class="bet-btn" onclick="maxBet('poker')">MAX</button>
+                    </div>
+                    <div class="cards-area" id="poker-cards">
+                        <div class="card hidden"></div>
+                        <div class="card hidden"></div>
+                        <div class="card hidden"></div>
+                        <div class="card hidden"></div>
+                        <div class="card hidden"></div>
+                    </div>
+                    <div class="poker-controls">
+                        <button class="action-btn primary" onclick="dealPoker()">🎴 РАЗДАТЬ</button>
+                        <button class="action-btn" onclick="holdCards()" id="hold-btn" disabled>🔒 ЗАБЛОКИРОВАТЬ</button>
+                        <button class="action-btn" onclick="drawPoker()" id="draw-btn" disabled>🃏 ДОБРАТЬ</button>
+                    </div>
+                    <div class="message" id="message-poker"></div>
+                    <div class="paytable">
+                        <h3>📊 КОМБИНАЦИИ</h3>
+                        <div class="paytable-grid">
+                            <div class="paytable-item">
+                                <div class="paytable-symbol">🂡🂫</div>
+                                <div class="paytable-value">Пара = x1</div>
+                            </div>
+                            <div class="paytable-item">
+                                <div class="paytable-symbol">🂡🂡</div>
+                                <div class="paytable-value">2 Пары = x2</div>
+                            </div>
+                            <div class="paytable-item">
+                                <div class="paytable-symbol">🂡🂡🂡</div>
+                                <div class="paytable-value">Сет = x3</div>
+                            </div>
+                            <div class="paytable-item">
+                                <div class="paytable-symbol">🂡🂡🂡🂡</div>
+                                <div class="paytable-value">Каре = x25</div>
+                            </div>
+                            <div class="paytable-item">
+                                <div class="paytable-symbol">🂦🂧🂨🂩🂪</div>
+                                <div class="paytable-value">Стрит = x4</div>
+                            </div>
+                            <div class="paytable-item">
+                                <div class="paytable-symbol">🂡♥</div>
+                                <div class="paytable-value">Флеш = x6</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Credit Button (shown when broke) -->
+    <div class="credit-section" id="credit-section" style="display: none;">
+        <button class="credit-btn" onclick="showCreditModal()">💸 КРЕДИТ</button>
+        <button class="furniture-btn" onclick="showFurnitureModal()">🛋️ МЕБЕЛЬ</button>
+        <button class="organs-btn" onclick="showUpgradesModal()">⚡ БИО-АПГРЕЙДЫ</button>
+    </div>
+
+    <!-- Credit Modal -->
+    <div class="modal" id="creditModal">
+        <div class="modal-content">
+            <h2>💸 НУЖНЫ МОНЕТЫ?</h2>
+            <p id="current-debt-display" style="color: #e74c3c; font-weight: bold;"></p>
+            <p>Возьмите заём в казино!</p>
+            <div class="credit-options">
+                <button class="credit-option" onclick="takeCredit(1000)">
+                    <span class="credit-amount">1,000</span>
+                    <span class="credit-desc">Мелочь</span>
+                </button>
+                <button class="credit-option" onclick="takeCredit(5000)">
+                    <span class="credit-amount">5,000</span>
+                    <span class="credit-desc">Норма</span>
+                </button>
+                <button class="credit-option" onclick="takeCredit(10000)">
+                    <span class="credit-amount">10,000</span>
+                    <span class="credit-desc">Куш</span>
+                </button>
+            </div>
+            <p style="color: #e74c3c; font-size: 0.9em; margin-top: 15px;">⚠️ Проценты: 10% каждые 5 секунд</p>
+            <p style="color: #f39c12; font-size: 0.85em;">⚠️ При долге 50,000+ будет штраф!</p>
+            <button class="modal-btn cancel" onclick="hideCreditModal()">❌ НЕ НАДО</button>
+        </div>
+    </div>
+
+    <!-- Furniture Modal -->
+    <div class="modal" id="furnitureModal">
+        <div class="modal-content">
+            <h2>🛋️ ПРОДАЖА МЕБЕЛИ</h2>
+            <p>Что продаём?</p>
+            <div class="furniture-list">
+                <div class="furniture-item" onclick="sellFurniture('tv', 500)">
+                    <span class="furniture-icon">📺</span>
+                    <span class="furniture-name">Телевизор</span>
+                    <span class="furniture-price">500</span>
+                </div>
+                <div class="furniture-item" onclick="sellFurniture('sofa', 1000)">
+                    <span class="furniture-icon">🛋️</span>
+                    <span class="furniture-name">Диван</span>
+                    <span class="furniture-price">1000</span>
+                </div>
+                <div class="furniture-item" onclick="sellFurniture('fridge', 800)">
+                    <span class="furniture-icon">🧊</span>
+                    <span class="furniture-name">Холодильник</span>
+                    <span class="furniture-price">800</span>
+                </div>
+                <div class="furniture-item" onclick="sellFurniture('bed', 1200)">
+                    <span class="furniture-icon">🛏️</span>
+                    <span class="furniture-name">Кровать</span>
+                    <span class="furniture-price">1200</span>
+                </div>
+                <div class="furniture-item" onclick="sellFurniture('table', 600)">
+                    <span class="furniture-icon">🪑</span>
+                    <span class="furniture-name">Стол</span>
+                    <span class="furniture-price">600</span>
+                </div>
+                <div class="furniture-item" onclick="sellFurniture('lamp', 200)">
+                    <span class="furniture-icon">💡</span>
+                    <span class="furniture-name">Лампа</span>
+                    <span class="furniture-price">200</span>
+                </div>
+            </div>
+            <button class="modal-btn cancel" onclick="hideFurnitureModal()">❌ ЗАКРЫТЬ</button>
+        </div>
+    </div>
+
+    <!-- Upgrades Modal (was Organs) -->
+    <div class="modal" id="upgradesModal">
+        <div class="modal-content upgrades">
+            <h2>⚡ БИО-АПГРЕЙДЫ</h2>
+            <p>Улучши свои способности!</p>
+            <div class="upgrades-list">
+                <div class="upgrade-item" onclick="sellUpgrade('kidney', 5000)">
+                    <span class="upgrade-icon">🫘</span>
+                    <span class="upgrade-name">Метаболизм</span>
+                    <span class="upgrade-bonus">🫘 -20% энергии</span>
+                    <span class="upgrade-price">5000</span>
+                </div>
+                <div class="upgrade-item" onclick="sellUpgrade('liver', 8000)">
+                    <span class="upgrade-icon">🟤</span>
+                    <span class="upgrade-name">Выносливость</span>
+                    <span class="upgrade-bonus">🟤 -30% энергии</span>
+                    <span class="upgrade-price">8000</span>
+                </div>
+                <div class="upgrade-item" onclick="sellUpgrade('eye', 3000)">
+                    <span class="upgrade-icon">👁️</span>
+                    <span class="upgrade-name">Зоркость</span>
+                    <span class="upgrade-bonus">👁️ +5% удачи</span>
+                    <span class="upgrade-price">3000</span>
+                </div>
+                <div class="upgrade-item" onclick="sellUpgrade('lung', 6000)">
+                    <span class="upgrade-icon">🫁</span>
+                    <span class="upgrade-name">Дыхание</span>
+                    <span class="upgrade-bonus">🫁 Быстрее восстановление</span>
+                    <span class="upgrade-price">6000</span>
+                </div>
+                <div class="upgrade-item" onclick="sellUpgrade('heart', 10000)">
+                    <span class="upgrade-icon">❤️</span>
+                    <span class="upgrade-name">Удача</span>
+                    <span class="upgrade-bonus">❤️ +10% к выигрышам</span>
+                    <span class="upgrade-price">10000</span>
+                </div>
+                <div class="upgrade-item" onclick="sellUpgrade('brain', 15000)">
+                    <span class="upgrade-icon">🧠</span>
+                    <span class="upgrade-name">Интеллект</span>
+                    <span class="upgrade-bonus">🧠 Видишь шансы</span>
+                    <span class="upgrade-price">15000</span>
+                </div>
+                <div class="upgrade-item" onclick="sellUpgrade('stomach', 7000)">
+                    <span class="upgrade-icon">🤢</span>
+                    <span class="upgrade-name">Железный желудок</span>
+                    <span class="upgrade-bonus">🤢 +50% к энергии</span>
+                    <span class="upgrade-price">7000</span>
+                </div>
+                <div class="upgrade-item" onclick="sellUpgrade('skin', 4000)">
+                    <span class="upgrade-icon">👶</span>
+                    <span class="upgrade-name">Молодость</span>
+                    <span class="upgrade-bonus">👶 Свежий вид</span>
+                    <span class="upgrade-price">4000</span>
+                </div>
+            </div>
+            <p style="color: #f39c12; font-size: 0.9em;">⚠️ Апгрейды необратимы!</p>
+            <button class="modal-btn cancel" onclick="hideUpgradesModal()">❌ ЗАКРЫТЬ</button>
+        </div>
+    </div>
+
+    <!-- Ad Reward Modal -->
+    <div class="modal" id="adRewardModal">
+        <div class="modal-content">
+            <h2>🎁 БОНУС!</h2>
+            <p>Посмотри рекламу и получи бонус!</p>
+            <div class="ad-rewards">
+                <button class="ad-reward-btn" onclick="showRewardedAd('coins')">
+                    <span class="ad-icon">💰</span>
+                    <span class="ad-text">1000 монет</span>
+                </button>
+                <button class="ad-reward-btn" onclick="showRewardedAd('bonus')">
+                    <span class="ad-icon">🎰</span>
+                    <span class="ad-text">x2 к выигрышу</span>
+                </button>
+                <button class="ad-reward-btn" onclick="showRewardedAd('debt')">
+                    <span class="ad-icon">💳</span>
+                    <span class="ad-text">-10% долга</span>
+                </button>
+            </div>
+            <button class="modal-btn cancel" onclick="hideAdRewardModal()">❌ ЗАКРЫТЬ</button>
+        </div>
+    </div>
+
+    <script src="js/yandex-sdk.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/game-slots.js"></script>
+    <script src="js/game-roulette.js"></script>
+    <script src="js/game-cards.js"></script>
+    <script src="js/game-dice.js"></script>
+    <script src="js/game-mines.js"></script>
+    <script src="js/game-wheel.js"></script>
+    <script src="js/game-blackjack.js"></script>
+    <script src="js/game-poker.js"></script>
+</body>
+</html>

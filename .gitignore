@@ -1,0 +1,36 @@
+# Игнорируем временные файлы и зависимости
+
+# ОС
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Редакторы
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Логи
+*.log
+
+# Сохранения игры (локальные)
+saveData.json
+
+# Временные файлы
+tmp/
+temp/
+*.tmp
+
+# Node modules (если будете использовать сборку)
+node_modules/
+package-lock.json
+
+# Сборка
+dist/
+build/
+
+# Архивы для Яндекс Игр
+*.zip
+*.tar.gz

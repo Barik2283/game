@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Icon Generator - CASINO ROYALE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0c0c0c 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            color: #fff;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ffd700, #ff6b6b, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+        }
+        
+        .subtitle {
+            color: #aaa;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .lang-switch {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .lang-btn {
+            padding: 10px 25px;
+            border: 2px solid #ffd700;
+            background: transparent;
+            color: #ffd700;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .lang-btn.active,
+        .lang-btn:hover {
+            background: #ffd700;
+            color: #1a1a2e;
+        }
+        
+        .section {
+            width: 100%;
+            max-width: 1200px;
+            margin: 40px 0;
+        }
+        
+        .section-title {
+            font-size: 1.8em;
+            color: #ffd700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .preview-container {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 30px 0;
+        }
+        
+        .icon-group {
+            text-align: center;
+        }
+        
+        .icon-row {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .icon-wrapper {
+            text-align: center;
+        }
+        
+        .icon-preview {
+            border-radius: 25%;
+            box-shadow: 0 20px 60px rgba(255, 215, 0, 0.4);
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            background: #fff;
+        }
+        
+        .icon-maskable {
+            border-radius: 50%;
+            box-shadow: 0 20px 60px rgba(0, 184, 148, 0.4);
+            border: 4px solid rgba(0, 184, 148, 0.3);
+        }
+        
+        .icon-192 {
+            width: 192px;
+            height: 192px;
+        }
+        
+        .icon-512 {
+            width: 512px;
+            height: 512px;
+        }
+        
+        .icon-label {
+            margin-top: 15px;
+            font-size: 1.1em;
+            color: #ffd700;
+            font-weight: bold;
+        }
+        
+        .icon-size {
+            font-size: 0.85em;
+            color: #888;
+            margin-top: 5px;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75em;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+        
+        .badge-maskable {
+            background: linear-gradient(45deg, #00b894, #00a085);
+            color: white;
+        }
+        
+        .badge-standard {
+            background: linear-gradient(45deg, #666, #444);
+            color: white;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 30px 0;
+        }
+        
+        .download-btn {
+            padding: 14px 28px;
+            font-size: 1em;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-192 {
+            background: linear-gradient(45deg, #ffd700, #ffaa00);
+            color: #1a1a2e;
+        }
+        
+        .btn-512 {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a5a);
+            color: white;
+        }
+        
+        .btn-maskable {
+            background: linear-gradient(45deg, #00b894, #00a085);
+            color: white;
+        }
+        
+        .btn-all {
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+            color: white;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
+        }
+        
+        .info-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 20px;
+            padding: 25px;
+            max-width: 800px;
+            margin: 30px auto;
+        }
+        
+        .info-box h3 {
+            color: #ffd700;
+            margin-bottom: 15px;
+        }
+        
+        .info-box p {
+            color: #ccc;
+            line-height: 1.6;
+            margin: 10px 0;
+        }
+        
+        .info-box ol, .info-box ul {
+            margin-left: 20px;
+            line-height: 1.8;
+            color: #ccc;
+        }
+        
+        .info-box li {
+            margin: 8px 0;
+        }
+        
+        .highlight {
+            color: #ffd700;
+            font-weight: bold;
+        }
+        
+        .green {
+            color: #00b894;
+        }
+        
+        .comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .comparison-item {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .comparison-item h4 {
+            color: #ffd700;
+            margin-bottom: 15px;
+        }
+        
+        .shape-preview {
+            width: 80px;
+            height: 80px;
+            margin: 10px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            background: linear-gradient(45deg, #ffd700, #ff6b6b);
+            border-radius: 50%;
+        }
+        
+        .safe-zone-overlay {
+            position: relative;
+        }
+        
+        .safe-zone-guide {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 3px dashed rgba(0, 255, 0, 0.7);
+            background: rgba(0, 255, 0, 0.1);
+            pointer-events: none;
+        }
+        
+        canvas {
+            display: none;
+        }
+        
+        .text-content {
+            max-width: 900px;
+            margin: 40px auto;
+        }
+        
+        .text-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+        
+        .text-section h2 {
+            color: #ffd700;
+            margin-bottom: 20px;
+        }
+        
+        .copy-btn {
+            background: linear-gradient(45deg, #00b894, #00a085);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .text-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+            line-height: 1.6;
+            color: #0f0;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+        
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .tag {
+            background: rgba(255, 215, 0, 0.2);
+            color: #ffd700;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <h1>🎰 CASINO ROYALE</h1>
+    <p class="subtitle" data-ru="Генератор графики для Яндекс Игр" data-en="Graphics Generator for Yandex Games">Генератор графики для Яндекс Игр</p>
+    
+    <div class="lang-switch">
+        <button class="lang-btn active" onclick="setLang('ru')">🇷🇺 Русский</button>
+        <button class="lang-btn" onclick="setLang('en')">🇬🇧 English</button>
+    </div>
+    
+    <!-- MASKABLE ICONS -->
+    <div class="section">
+        <h2 class="section-title" data-ru="🔵 Maskable Иконки (Рекомендуется)" data-en="🔵 Maskable Icons (Recommended)">🔵 Maskable Иконки (Рекомендуется)</h2>
+        <p style="text-align: center; color: #aaa; margin-bottom: 20px;" 
+           data-ru="Maskable иконки имеют безопасную зону 50% и адаптируются под любую форму на Android" 
+           data-en="Maskable icons have 50% safe zone and adapt to any shape on Android">
+            Maskable иконки имеют безопасную зону 50% и адаптируются под любую форму на Android
+        </p>
+        
+        <div class="preview-container">
+            <div class="icon-group">
+                <div class="icon-row">
+                    <div class="icon-wrapper">
+                        <div class="safe-zone-overlay">
+                            <canvas id="canvas-maskable-192" width="192" height="192" class="icon-preview icon-maskable icon-192"></canvas>
+                            <div class="safe-zone-guide" style="width: 96px; height: 96px;"></div>
+                        </div>
+                        <div class="icon-label">192×192</div>
+                        <div class="icon-size" data-ru="Maskable" data-en="Maskable">Maskable</div>
+                        <span class="badge badge-maskable" data-ru="✓ Для Android" data-en="✓ For Android">✓ Для Android</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="icon-group">
+                <div class="icon-row">
+                    <div class="icon-wrapper">
+                        <div class="safe-zone-overlay">
+                            <canvas id="canvas-maskable-512" width="512" height="512" class="icon-preview icon-maskable icon-512"></canvas>
+                            <div class="safe-zone-guide" style="width: 256px; height: 256px;"></div>
+                        </div>
+                        <div class="icon-label">512×512</div>
+                        <div class="icon-size" data-ru="Maskable" data-en="Maskable">Maskable</div>
+                        <span class="badge badge-maskable" data-ru="✓ Для Android" data-en="✓ For Android">✓ Для Android</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="buttons">
+            <button class="download-btn btn-maskable" onclick="downloadIcon(192, true)">📥 192 Maskable</button>
+            <button class="download-btn btn-maskable" onclick="downloadIcon(512, true)">📥 512 Maskable</button>
+        </div>
+    </div>
+    
+    <!-- STANDARD ICONS -->
+    <div class="section">
+        <h2 class="section-title" data-ru="📱 Обычные Иконки" data-en="📱 Standard Icons">📱 Обычные Иконки</h2>
+        
+        <div class="preview-container">
+            <div class="icon-group">
+                <div class="icon-row">
+                    <div class="icon-wrapper">
+                        <canvas id="canvas-192" width="192" height="192" class="icon-preview icon-192"></canvas>
+                        <div class="icon-label">192×192</div>
+                        <div class="icon-size" data-ru="Стандартная" data-en="Standard">Стандартная</div>
+                        <span class="badge badge-standard" data-ru="Обычная" data-en="Standard">Обычная</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="icon-group">
+                <div class="icon-row">
+                    <div class="icon-wrapper">
+                        <canvas id="canvas-512" width="512" height="512" class="icon-preview icon-512"></canvas>
+                        <div class="icon-label">512×512</div>
+                        <div class="icon-size" data-ru="Стандартная" data-en="Standard">Стандартная</div>
+                        <span class="badge badge-standard" data-ru="Обычная" data-en="Standard">Обычная</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="buttons">
+            <button class="download-btn btn-192" onclick="downloadIcon(192, false)">📥 192 Standard</button>
+            <button class="download-btn btn-512" onclick="downloadIcon(512, false)">📥 512 Standard</button>
+        </div>
+    </div>
+    
+    <!-- DOWNLOAD ALL -->
+    <div class="section">
+        <div class="buttons">
+            <button class="download-btn btn-all" onclick="downloadAll()">📦 <span data-ru="Скачать всё (4 файла)" data-en="Download All (4 files)">Скачать всё (4 файла)</span></button>
+        </div>
+    </div>
+    
+    <!-- COMPARISON -->
+    <div class="comparison">
+        <div class="comparison-item">
+            <h4 data-ru="🔵 Круг (Pixel)" data-en="🔵 Circle (Pixel)">🔵 Круг (Pixel)</h4>
+            <div class="shape-preview">🎰</div>
+            <p style="color: #888; font-size: 0.9em;" data-ru="Обрезает углы" data-en="Cuts corners">Обрезает углы</p>
+        </div>
+        <div class="comparison-item">
+            <h4 data-ru="🔲 Квадрат" data-en="🔲 Square">🔲 Квадрат</h4>
+            <div class="shape-preview" style="border-radius: 0;">🎰</div>
+            <p style="color: #888; font-size: 0.9em;" data-ru="Полный размер" data-en="Full size">Полный размер</p>
+        </div>
+        <div class="comparison-item">
+            <h4 data-ru="📱 Скруглённый" data-en="📱 Rounded">📱 Скруглённый</h4>
+            <div class="shape-preview" style="border-radius: 20%;">🎰</div>
+            <p style="color: #888; font-size: 0.9em;" data-ru="Мягкие углы" data-en="Soft corners">Мягкие углы</p>
+        </div>
+        <div class="comparison-item">
+            <h4 data-ru="⬜ Squircle" data-en="⬜ Squircle">⬜ Squircle</h4>
+            <div class="shape-preview" style="border-radius: 35%;">🎰</div>
+            <p style="color: #888; font-size: 0.9em;" data-ru="Суперэллипс" data-en="Superellipse">Суперэллипс</p>
+        </div>
+    </div>
+    
+    <!-- INFO BOX -->
+    <div class="info-box">
+        <h3 data-ru="📋 Инструкция:" data-en="📋 Instructions:">📋 Инструкция:</h3>
+        <ol data-ru="Скачайте все 4 иконки" data-en="Download all 4 icons">
+            <li><span class="highlight" data-ru="Нажмите &quot;📦 Скачать всё&quot;" data-en="Click &quot;📦 Download All&quot;">Нажмите "📦 Скачать всё"</span> <span data-ru="чтобы сохранить все 4 иконки" data-en="to save all 4 icons">чтобы сохранить все 4 иконки</span></li>
+            <li><span data-ru="Сохраните файлы в папку" data-en="Save files to folder">Сохраните файлы в папку</span> <span class="highlight">icons/</span></li>
+            <li><span data-ru="Назовите файлы:" data-en="Name files:">Назовите файлы:</span>
+                <ul>
+                    <li><span class="highlight">icon-192.png</span> — <span data-ru="обычная 192×192" data-en="standard 192×192">обычная 192×192</span></li>
+                    <li><span class="highlight">icon-512.png</span> — <span data-ru="обычная 512×512" data-en="standard 512×512">обычная 512×512</span></li>
+                    <li><span class="highlight">icon-maskable-192.png</span> — <span data-ru="maskable 192×192" data-en="maskable 192×192">maskable 192×192</span></li>
+                    <li><span class="highlight">icon-maskable-512.png</span> — <span data-ru="maskable 512×512" data-en="maskable 512×512">maskable 512×512</span></li>
+                </ul>
+            </li>
+            <li><span data-ru="Обновите" data-en="Update">Обновите</span> <span class="highlight">yandex-manifest.json</span> (<span data-ru="см. ниже" data-en="see below">см. ниже</span>)</li>
+            <li><span data-ru="Готово!" data-en="Done!">Готово!</span></li>
+        </ol>
+        
+        <h3 style="color: #00b894; margin-top: 25px;">🔧 yandex-manifest.json:</h3>
+        <pre style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; overflow-x: auto; color: #0f0; font-size: 0.85em; margin-top: 10px;">{
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}</pre>
+    </div>
+    
+    <!-- GAME DESCRIPTION -->
+    <div class="text-content">
+        <div class="text-section">
+            <h2 data-ru="📝 Описание игры (Русский)" data-en="📝 Game Description (Russian)">📝 Описание игры (Русский)</h2>
+            <button class="copy-btn" onclick="copyText('desc-ru')">📋 <span data-ru="Копировать" data-en="Copy">Копировать</span></button>
+            <div class="text-box" id="desc-ru">🎰 ДОБРО ПОЖАЛОВАТЬ В CASINO ROYALE! 🎰
+
+Лучшее бесплатное казино с множеством азартных игр!
+
+🎮 9 УВЛЕКАТЕЛЬНЫХ ИГР:
+• 🎰 Фруктовые слоты - классические автоматы с джекпотом
+• 🎡 Рулетка - европейская рулетка, красное/чёрное
+• 🃏 Карточки - угадай карту, удвой выигрыш
+• 🎲 Кости - бросай кости, делай ставки
+• 💣 Мины - сапёр с азартными ставками
+• 🎯 Колесо Фортуны - крути и выигрывай
+• 🃏 Блэкджек - 21 очко, обыграй дилера
+• 🂡 Покер - видео покер, собирай комбинации
+
+✨ ОСОБЕННОСТИ:
+💰 Прогрессивный джекпот
+🎁 Бонусы за рекламу
+💳 Система кредитов
+📱 Адаптивный дизайн
+💾 Облачные сохранения
+
+⚠️ 18+ Только для совершеннолетних.
+Игра не предполагает реальные деньги.</div>
+        </div>
+        
+        <div class="text-section">
+            <h2 data-ru="📝 Game Description (English)" data-en="📝 Game Description (English)">📝 Game Description (English)</h2>
+            <button class="copy-btn" onclick="copyText('desc-en')">📋 <span data-ru="Копировать" data-en="Copy">Копировать</span></button>
+            <div class="text-box" id="desc-en">🎰 WELCOME TO CASINO ROYALE! 🎰
+
+The best free casino with multiple gambling games!
+
+🎮 9 EXCITING GAMES:
+• 🎰 Fruit Slots - classic slots with jackpot
+• 🎡 Roulette - European roulette, red/black
+• 🃏 Cards - guess the card, double your win
+• 🎲 Dice - roll the dice, place bets
+• 💣 Mines - minesweeper with betting
+• 🎯 Wheel of Fortune - spin and win
+• 🃏 Blackjack - 21, beat the dealer
+• 🂡 Poker - video poker, collect combinations
+
+✨ FEATURES:
+💰 Progressive jackpot
+🎁 Ad rewards
+💳 Credit system
+📱 Adaptive design
+💾 Cloud saves
+
+⚠️ 18+ Adults only.
+No real money gambling.</div>
+        </div>
+        
+        <div class="text-section">
+            <h2 data-ru="🏷️ Теги (Keywords)" data-en="🏷️ Tags (Keywords)">🏷️ Теги (Keywords)</h2>
+            <div class="tags">
+                <span class="tag">casino</span>
+                <span class="tag">slots</span>
+                <span class="tag">roulette</span>
+                <span class="tag">poker</span>
+                <span class="tag">blackjack</span>
+                <span class="tag">dice</span>
+                <span class="tag">gambling</span>
+                <span class="tag">free games</span>
+                <span class="tag">mobile games</span>
+                <span class="tag">jackpot</span>
+                <span class="tag">казино</span>
+                <span class="tag">слоты</span>
+                <span class="tag">рулетка</span>
+                <span class="tag">покер</span>
+                <span class="tag">азартные игры</span>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentLang = 'ru';
+        
+        function setLang(lang) {
+            currentLang = lang;
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.querySelectorAll('[data-ru]').forEach(el => {
+                el.textContent = el.getAttribute(`data-${lang}`);
+            });
+        }
+        
+        // Draw standard icon
+        function drawStandardIcon(canvas, size) {
+            const ctx = canvas.getContext('2d');
+            const centerX = size / 2;
+            const centerY = size / 2;
+            
+            ctx.clearRect(0, 0, size, size);
+            
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#ffd700');
+            gradient.addColorStop(0.5, '#ff6b6b');
+            gradient.addColorStop(1, '#ee5a5a');
+            
+            const radius = size * 0.2;
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.roundRect(0, 0, size, size, radius);
+            ctx.fill();
+            
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.lineWidth = size * 0.02;
+            ctx.beginPath();
+            ctx.roundRect(size * 0.05, size * 0.05, size * 0.9, size * 0.9, radius * 0.9);
+            ctx.stroke();
+            
+            const chipRadius = size * 0.35;
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, chipRadius, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.lineWidth = size * 0.015;
+            ctx.setLineDash([size * 0.03, size * 0.02]);
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, chipRadius - size * 0.05, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            ctx.fillStyle = '#ffffff';
+            ctx.font = `${size * 0.55}px 'Segoe UI Emoji', 'Apple Color Emoji', sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+            ctx.shadowBlur = size * 0.15;
+            ctx.shadowOffsetX = size * 0.05;
+            ctx.shadowOffsetY = size * 0.05;
+            
+            ctx.fillText('🎰', centerX, centerY + size * 0.02);
+            
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+            
+            drawSparkle(ctx, size * 0.15, size * 0.15, size * 0.08);
+            drawSparkle(ctx, size * 0.85, size * 0.2, size * 0.06);
+        }
+        
+        // Draw TRUE maskable icon with 50% safe zone
+        function drawMaskableIcon(canvas, size) {
+            const ctx = canvas.getContext('2d');
+            const centerX = size / 2;
+            const centerY = size / 2;
+            const safeZone = size * 0.5; // 50% safe zone = content in center 50%
+            
+            ctx.clearRect(0, 0, size, size);
+            
+            // Full bleed background (extends to all edges)
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#ffd700');
+            gradient.addColorStop(0.5, '#ff6b6b');
+            gradient.addColorStop(1, '#ee5a5a');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, size, size);
+            
+            // Subtle border
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+            ctx.lineWidth = size * 0.03;
+            ctx.strokeRect(size * 0.02, size * 0.02, size * 0.96, size * 0.96);
+            
+            // Large background circle (fills safe zone)
+            const bgRadius = size * 0.45;
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, bgRadius, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Decorative ring
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+            ctx.lineWidth = size * 0.02;
+            ctx.setLineDash([size * 0.04, size * 0.03]);
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, bgRadius - size * 0.08, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            // Emoji - SCALED TO FIT SAFE ZONE (50% of canvas)
+            ctx.fillStyle = '#ffffff';
+            ctx.font = `${size * 0.4}px 'Segoe UI Emoji', 'Apple Color Emoji', sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+            ctx.shadowBlur = size * 0.2;
+            ctx.shadowOffsetX = size * 0.05;
+            ctx.shadowOffsetY = size * 0.05;
+            
+            ctx.fillText('🎰', centerX, centerY);
+            
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+            
+            // Extra sparkles in corners (outside safe zone, will be visible on some devices)
+            drawSparkle(ctx, size * 0.15, size * 0.15, size * 0.07);
+            drawSparkle(ctx, size * 0.85, size * 0.15, size * 0.07);
+            drawSparkle(ctx, size * 0.15, size * 0.85, size * 0.06);
+            drawSparkle(ctx, size * 0.85, size * 0.85, size * 0.06);
+        }
+        
+        function drawSparkle(ctx, x, y, size) {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.beginPath();
+            ctx.moveTo(x - size, y);
+            ctx.lineTo(x + size, y);
+            ctx.moveTo(x, y - size);
+            ctx.lineTo(x, y + size);
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+            ctx.lineWidth = size * 0.15;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+        }
+        
+        function downloadIcon(size, maskable) {
+            const canvasId = maskable ? `canvas-maskable-${size}` : `canvas-${size}`;
+            const canvas = document.getElementById(canvasId);
+            
+            canvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                const maskableStr = maskable ? '-maskable' : '';
+                a.download = `icon${maskableStr}-${size}.png`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 'image/png');
+        }
+        
+        function downloadAll() {
+            downloadIcon(192, false);
+            setTimeout(() => downloadIcon(512, false), 200);
+            setTimeout(() => downloadIcon(192, true), 400);
+            setTimeout(() => downloadIcon(512, true), 600);
+        }
+        
+        function copyText(elementId) {
+            const text = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                alert(currentLang === 'ru' ? '✅ Скопировано!' : '✅ Copied!');
+            }).catch(() => {
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                alert(currentLang === 'ru' ? '✅ Скопировано!' : '✅ Copied!');
+            });
+        }
+        
+        if (!CanvasRenderingContext2D.prototype.roundRect) {
+            CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+                if (w < 2 * r) r = w / 2;
+                if (h < 2 * r) r = h / 2;
+                this.moveTo(x + r, y);
+                this.arcTo(x + w, y, x + w, y + h, r);
+                this.arcTo(x + w, y + h, x, y + h, r);
+                this.arcTo(x, y + h, x, y, r);
+                this.arcTo(x, y, x + w, y, r);
+                this.closePath();
+                return this;
+            };
+        }
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            drawStandardIcon(document.getElementById('canvas-192'), 192);
+            drawStandardIcon(document.getElementById('canvas-512'), 512);
+            drawMaskableIcon(document.getElementById('canvas-maskable-192'), 192);
+            drawMaskableIcon(document.getElementById('canvas-maskable-512'), 512);
+        });
+    </script>
+</body>
+</html>
