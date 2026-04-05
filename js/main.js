@@ -5,58 +5,42 @@ let lastWin = 0;
 let credit = 0;
 let creditTimer = null;
 let furnitureOwned = ['tv', 'sofa', 'fridge', 'bed', 'table', 'lamp'];
-let upgradesOwned = ['kidney', 'liver', 'eye', 'lung', 'heart', 'brain', 'stomach', 'skin']; // was organsOwned
+let upgradesOwned = ['kidney', 'liver', 'eye', 'lung', 'heart', 'brain', 'stomach', 'skin'];
 let screenBroken = false;
 let collectorsActive = false;
 let collectorTimer = null;
-let energy = 0; // was intoxication (0-100) - renamed for Yandex Games
 let povertyMode = false;
 
-// Upgrade bonuses (was organBonuses)
+// Upgrade bonuses
 const upgradeBonuses = {
-    'kidney': { name: 'Метаболизм', bonus: '🫘 -20% к энергии', effect: 'energy_reduction', value: 0.2 },
-    'liver': { name: 'Выносливость', bonus: '🟤 -30% к энергии', effect: 'energy_reduction', value: 0.3 },
+    'kidney': { name: 'Метаболизм', bonus: '💰 +10% к выигрышам', effect: 'win_bonus', value: 0.1 },
+    'liver': { name: 'Выносливость', bonus: '🛡️ +20% к удаче', effect: 'luck', value: 0.2 },
     'eye': { name: 'Зоркость', bonus: '👁️ +5% к удаче', effect: 'luck', value: 0.05 },
-    'lung': { name: 'Дыхание', bonus: '🫁 Быстрее восстановление', effect: 'recovery_speed', value: 2 },
-    'heart': { name: 'Удача', bonus: '❤️ +10% к выигрышам', effect: 'win_bonus', value: 0.1 },
-    'brain': { name: 'Интеллект', bonus: '🧠 Видишь шансы', effect: 'show_odds', value: 1 },
-    'stomach': { name: 'Железный желудок', bonus: '🤢 +50% к энергии', effect: 'energy_capacity', value: 0.5 },
+    'lung': { name: 'Дыхание', bonus: '🫁 Быстрое восстановление', effect: 'recovery_speed', value: 2 },
+    'heart': { name: 'Удача', bonus: '❤️ +15% к выигрышам', effect: 'win_bonus', value: 0.15 },
+    'brain': { name: 'Интеллект', bonus: '🧠 Умные решения', effect: 'show_odds', value: 1 },
+    'stomach': { name: 'Железный желудок', bonus: '💪 +10% к выигрышам', effect: 'win_bonus', value: 0.1 },
     'skin': { name: 'Молодость', bonus: '👶 Молодой вид', effect: 'charm', value: 0.05 }
 };
 
-// Energy reduction from upgrades
-function getEnergyReduction() {
-    let reduction = 0;
-    if (upgradesOwned.includes('kidney')) reduction += upgradeBonuses['kidney'].value;
-    if (upgradesOwned.includes('liver')) reduction += upgradeBonuses['liver'].value;
-    if (upgradesOwned.includes('stomach')) reduction += upgradeBonuses['stomach'].value;
-    return reduction;
-}
-
 function getWinBonus() {
     let bonus = 0;
+    if (upgradesOwned.includes('kidney')) bonus += upgradeBonuses['kidney'].value;
+    if (upgradesOwned.includes('liver')) bonus += upgradeBonuses['liver'].value;
     if (upgradesOwned.includes('heart')) bonus += upgradeBonuses['heart'].value;
+    if (upgradesOwned.includes('stomach')) bonus += upgradeBonuses['stomach'].value;
     return bonus;
-}
-
-function getRecoverySpeed() {
-    let speed = 0;
-    if (upgradesOwned.includes('lung')) speed += upgradeBonuses['lung'].value;
-    return speed;
 }
 
 function getLuckBonus() {
     let luck = 0;
     if (upgradesOwned.includes('eye')) luck += upgradeBonuses['eye'].value;
+    if (upgradesOwned.includes('liver')) luck += upgradeBonuses['liver'].value;
     return luck;
 }
 
 function applyUpgradeBonuses() {
-    // Passive energy recovery over time
-    if (energy > 0 && getRecoverySpeed() > 0) {
-        energy = Math.max(0, energy - getRecoverySpeed());
-        updateEnergyDisplay();
-    }
+    // Passive bonuses applied automatically
 }
 
 // Apply upgrade bonuses every 10 seconds
@@ -81,32 +65,44 @@ const slotWeights = [28, 23, 18, 10, 11, 10];
 const slotMultipliers = { '🍎': 100, '🍏': 200, '🍌': 500, '🍇': 1000, '🌿': 2500, '💎': 'jackpot' };
 
 // Utility Functions
+let lastBalance = 5000;
+
 function updateStats() {
-    document.getElementById('balance').textContent = balance;
-    document.getElementById('jackpot').textContent = jackpot;
-    document.getElementById('lastWin').textContent = lastWin;
+    const balanceEl = document.getElementById('balance');
+    const jackpotEl = document.getElementById('jackpot');
+    const lastWinEl = document.getElementById('lastWin');
+
+    if (balanceEl) balanceEl.textContent = balance;
+    if (jackpotEl) jackpotEl.textContent = jackpot;
+    if (lastWinEl) lastWinEl.textContent = lastWin;
+
+    // Animate balance change
+    if (balanceEl) {
+        if (balance > lastBalance) {
+            balanceEl.classList.add('balance-up');
+            setTimeout(() => balanceEl.classList.remove('balance-up'), 1000);
+        } else if (balance < lastBalance) {
+            balanceEl.classList.add('balance-down');
+            setTimeout(() => balanceEl.classList.remove('balance-down'), 1000);
+        }
+    }
+    lastBalance = balance;
 
     // Show/hide credit display
     const creditStat = document.getElementById('credit-stat');
     const creditDisplay = document.getElementById('credit-display');
     const repayBtn = document.getElementById('repay-credit-btn');
 
-    if (credit > 0) {
-        creditStat.style.display = 'block';
-        creditDisplay.textContent = credit;
-        repayBtn.style.display = 'inline-block';
-    } else {
-        creditStat.style.display = 'none';
-        creditDisplay.textContent = '0';
-        repayBtn.style.display = 'none';
-    }
-
-    // Show/hide credit button based on balance
-    const creditSection = document.getElementById('credit-section');
-    if (balance <= 0) {
-        creditSection.style.display = 'flex';
-    } else {
-        creditSection.style.display = 'none';
+    if (creditStat && creditDisplay && repayBtn) {
+        if (credit > 0) {
+            creditStat.style.display = 'block';
+            creditDisplay.textContent = credit;
+            repayBtn.style.display = 'inline-block';
+        } else {
+            creditStat.style.display = 'none';
+            creditDisplay.textContent = '0';
+            repayBtn.style.display = 'none';
+        }
     }
 }
 
@@ -131,8 +127,71 @@ function showMessage(game, text, type) {
     if (el) {
         el.textContent = text;
         el.className = `message ${type}`;
+        el.style.display = 'block';
+        el.style.opacity = '1';
+        el.style.visibility = 'visible';
+        // Auto-hide after 6 seconds
+        setTimeout(() => {
+            el.style.opacity = '0';
+            setTimeout(() => {
+                el.style.display = 'none';
+                el.textContent = '';
+                el.className = 'message';
+            }, 300);
+        }, 6000);
     }
 }
+
+// Show global notification (replaces alert)
+function showNotification(text, type = 'info', duration = 4000) {
+    // Remove existing notification
+    const existing = document.querySelector('.global-notification');
+    if (existing) existing.remove();
+
+    const notif = document.createElement('div');
+    notif.className = `global-notification ${type}`;
+    notif.textContent = text;
+    notif.style.cssText = `
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 15px 30px;
+        border-radius: 15px;
+        font-size: 1.1em;
+        font-weight: bold;
+        z-index: 10000;
+        animation: notifSlideIn 0.3s ease;
+        max-width: 90%;
+        text-align: center;
+        box-shadow: 0 5px 30px rgba(0,0,0,0.5);
+    `;
+
+    if (type === 'win') {
+        notif.style.background = 'linear-gradient(45deg, #00b894, #00a085)';
+        notif.style.color = '#fff';
+    } else if (type === 'lose') {
+        notif.style.background = 'linear-gradient(45deg, #e74c3c, #c0392b)';
+        notif.style.color = '#fff';
+    } else if (type === 'warning') {
+        notif.style.background = 'linear-gradient(45deg, #f39c12, #e67e22)';
+        notif.style.color = '#fff';
+    } else {
+        notif.style.background = 'linear-gradient(45deg, #3498db, #2980b9)';
+        notif.style.color = '#fff';
+    }
+
+    document.body.appendChild(notif);
+
+    setTimeout(() => {
+        notif.style.animation = 'notifSlideOut 0.3s ease';
+        setTimeout(() => notif.remove(), 300);
+    }, duration);
+}
+
+// Make showNotification globally accessible
+window.showNotification = showNotification;
+window.showMessage = showMessage;
 
 function getRandomSymbol() {
     const totalWeight = slotWeights.reduce((a, b) => a + b, 0);
@@ -168,57 +227,50 @@ function confirmAge() {
     document.getElementById('ageWarningModal').classList.remove('active');
 }
 
-// Withdraw Modal - CENSORED VERSION
-function showWithdrawModal() {
-    document.getElementById('withdraw-amount').textContent = balance;
-    document.getElementById('withdrawModal').classList.add('active');
-}
-
-function hideWithdrawModal() {
-    document.getElementById('withdrawModal').classList.remove('active');
-}
-
-function confirmWithdraw() {
-    // Показываем напоминание о виртуальной валюте
-    alert('⚠️ НАПОМИНАНИЕ\n\nВсе выигрыши являются виртуальными и не могут быть конвертированы в реальные деньги.\n\n(вывод отменён)');
-    hideWithdrawModal();
-}
-
 // Credit Modal
 function showCreditModal() {
+    const modal = document.getElementById('creditModal');
     const debtDisplay = document.getElementById('current-debt-display');
+    const repayBtn = document.getElementById('repay-credit-btn');
+    
     if (credit > 0) {
-        debtDisplay.textContent = `Текущий долг: ${credit} монет`;
+        if (debtDisplay) debtDisplay.textContent = `Текущий долг: ${credit} монет`;
+        if (repayBtn) repayBtn.style.display = 'inline-block';
     } else {
-        debtDisplay.textContent = '';
+        if (debtDisplay) debtDisplay.textContent = 'Долгов нет!';
+        if (repayBtn) repayBtn.style.display = 'none';
     }
-    document.getElementById('creditModal').classList.add('active');
+    
+    if (modal) modal.classList.add('active');
 }
 
 function hideCreditModal() {
-    document.getElementById('creditModal').classList.remove('active');
+    const modal = document.getElementById('creditModal');
+    if (modal) modal.classList.remove('active');
 }
 
 function repayCredit() {
     if (credit <= 0) {
-        alert('У тебя нет долга!');
+        showNotification('У тебя нет долга!', 'info');
         return;
     }
 
     if (balance >= credit) {
+        const debtAmount = credit;
         balance -= credit;
         credit = 0;
         if (creditTimer) clearInterval(creditTimer);
         fixScreen();
         stopCollectors();
         updateStats();
-        alert(`✅ Кредит погашен!\n\nСписано: ${credit} монет\n\nТы свободен! 🎉`);
+        showNotification(`✅ Кредит погашен! Списано: ${debtAmount} монет. Ты свободен! 🎉`, 'win', 5000);
+        hideCreditModal();
     } else {
         const payment = balance;
         credit -= payment;
         balance = 0;
         updateStats();
-        alert(`💳 Частичное погашение!\n\nВнесено: ${payment} монет\n💳 Остаток долга: ${credit}`);
+        showNotification(`💳 Частичное погашение! Внесено: ${payment} | Остаток долга: ${credit}`, 'warning', 5000);
     }
 }
 
@@ -228,12 +280,15 @@ function takeCredit(amount) {
     updateStats();
     hideCreditModal();
 
+    showNotification(`✅ Взято ${amount} монет | Долг: ${credit}`, 'warning', 4000);
+
     // Start credit timer
     if (creditTimer) clearInterval(creditTimer);
     creditTimer = setInterval(() => {
         if (credit > 0) {
             credit = Math.floor(credit * 1.1); // 10% interest
             updateStats();
+            saveGameData();
 
             // Check if debt is too high
             if (credit > 50000 && !screenBroken) {
@@ -245,9 +300,7 @@ function takeCredit(amount) {
                 startCollectors();
             }
         }
-    }, 5000); // Every 5 seconds
-
-    alert(`✅ Взято ${amount} монет\n\n💳 Долг: ${credit}\n⚠️ Проценты: 10% каждые 5 секунд!\n⚠️ При долге 50,000+ будет штраф!\n⚠️ При долге 10,000+ приедут коллекторы!`);
+    }, 30000); // Every 30 seconds (not 5!)
 }
 
 // Screen break effect
@@ -277,7 +330,7 @@ function breakScreen() {
 
     // Show threat message
     setTimeout(() => {
-        alert('🚨 ВНИМАНИЕ! 🚨\n\nТЫ НЕ ОПЛАТИЛ КРЕДИТ!\n\nБРИГАДА ВЫЕХАЛА... 👊\n\nЭкран сломан! Продавай мебель чтобы оплатить долг!');
+        showNotification('🚨 ТЫ НЕ ОПЛАТИЛ КРЕДИТ! БРИГАДА ВЫЕХАЛА... 👊 Экран сломан!', 'lose', 5000);
     }, 1500);
 }
 
@@ -285,7 +338,7 @@ function fixScreen() {
     screenBroken = false;
     document.body.classList.remove('screen-broken');
     document.querySelectorAll('.crack').forEach(el => el.remove());
-    alert('🔧 Экран починили! Продолжай игру!');
+    showNotification('🔧 Экран починили! Продолжай игру!', 'win');
 }
 
 // Collectors
@@ -327,7 +380,7 @@ function startCollectors() {
         }
     }, 8000);
 
-    alert('🚨 КОЛЛЕКТОРЫ ВЫЕХАЛИ! 🚨\n\nПродавай апгрейды чтобы оплатить долг!\n\nИли гаси кредит!');
+    showNotification('🚨 КОЛЛЕКТОРЫ ВЫЕХАЛИ! Продавай апгрейды или гаси кредит!', 'lose', 5000);
 }
 
 function stopCollectors() {
@@ -335,13 +388,14 @@ function stopCollectors() {
     document.body.classList.remove('collectors-mode');
     document.querySelectorAll('.collector-message').forEach(el => el.remove());
     if (collectorTimer) clearInterval(collectorTimer);
-    alert('🎉 КОЛЛЕКТОРЫ УЕХАЛИ!\n\nДолг оплачен!');
+    showNotification('🎉 КОЛЛЕКТОРЫ УЕХАЛИ! Долг оплачен!', 'win');
 }
 
 // Upgrades (was Organs) - CENSORED VERSION
 function showUpgradesModal() {
     renderUpgradesModal();
-    document.getElementById('upgradesModal').classList.add('active');
+    const modal = document.getElementById('upgradesModal');
+    if (modal) modal.classList.add('active');
 }
 
 function renderUpgradesModal() {
@@ -374,13 +428,14 @@ function renderUpgradesModal() {
 }
 
 function hideUpgradesModal() {
-    document.getElementById('upgradesModal').classList.remove('active');
+    const modal = document.getElementById('upgradesModal');
+    if (modal) modal.classList.remove('active');
 }
 
 function sellUpgrade(upgrade, price) {
     const index = upgradesOwned.indexOf(upgrade);
     if (index === -1) {
-        alert('😵 Этот апгрейд уже куплен!');
+        showNotification('😵 Этот апгрейд уже куплен!', 'warning');
         return;
     }
 
@@ -406,21 +461,21 @@ function sellUpgrade(upgrade, price) {
         balance -= payment;
         updateStats();
 
-        alert(`💳 Продано: ${names[upgrade]} за ${price} монет\n\n💳 Автоматически погашено кредита: ${payment}\n💳 Остаток долга: ${credit}`);
+        showNotification(`💳 Продано: ${names[upgrade]} за ${price} | Погашено кредита: ${payment} | Остаток долга: ${credit}`, 'info', 5000);
 
         if (credit <= 0) {
             credit = 0;
             if (creditTimer) clearInterval(creditTimer);
             fixScreen();
             stopCollectors();
-            alert('🎉 КРЕДИТ ОПЛАЧЕН!\n\nТы свободен!');
+            showNotification('🎉 КРЕДИТ ОПЛАЧЕН! Ты свободен!', 'win', 5000);
         }
     } else {
-        alert(`💰 Продано: ${names[upgrade]} за ${price} монет\n\n💰 Баланс: ${balance}`);
+        showNotification(`💰 Продано: ${names[upgrade]} за ${price} | Баланс: ${balance}`, 'win', 4000);
     }
 
     if (upgradesOwned.length === 0) {
-        alert('⚡ ВСЕ АПГРЕЙДЫ ПРОДАНЫ!\n\nТеперь только выигрывать!');
+        showNotification('⚡ ВСЕ АПГРЕЙДЫ ПРОДАНЫ! Теперь только выигрывать!', 'warning', 5000);
     }
 
     hideUpgradesModal();
@@ -428,17 +483,19 @@ function sellUpgrade(upgrade, price) {
 
 // Furniture Modal
 function showFurnitureModal() {
-    document.getElementById('furnitureModal').classList.add('active');
+    const modal = document.getElementById('furnitureModal');
+    if (modal) modal.classList.add('active');
 }
 
 function hideFurnitureModal() {
-    document.getElementById('furnitureModal').classList.remove('active');
+    const modal = document.getElementById('furnitureModal');
+    if (modal) modal.classList.remove('active');
 }
 
 function sellFurniture(item, price) {
     const index = furnitureOwned.indexOf(item);
     if (index === -1) {
-        alert('😅 Это уже продано!');
+        showNotification('😅 Это уже продано!', 'warning');
         return;
     }
 
@@ -461,41 +518,43 @@ function sellFurniture(item, price) {
         credit -= payment;
         balance -= payment;
         updateStats();
-        alert(`💰 Продано: ${names[item]} за ${price} монет\n\n💳 Автоматически погашено кредита: ${payment}\n💳 Остаток долга: ${credit}`);
+        showNotification(`💰 Продано: ${names[item]} за ${price} | Погашено кредита: ${payment} | Остаток долга: ${credit}`, 'info', 5000);
 
         if (credit <= 0) {
             credit = 0;
             if (creditTimer) clearInterval(creditTimer);
             fixScreen();
             stopCollectors();
-            alert('🎉 КРЕДИТ ОПЛАЧЕН! 🎉\n\nТы свободен!');
+            showNotification('🎉 КРЕДИТ ОПЛАЧЕН! Ты свободен!', 'win', 5000);
         }
     } else {
-        alert(`💰 Продано: ${names[item]} за ${price} монет`);
+        showNotification(`💰 Продано: ${names[item]} за ${price} монет`, 'win');
     }
 
     if (furnitureOwned.length === 0) {
-        alert('🏠 ВСЁ! ПУСТАЯ ХАТА!\nТеперь только выигрывать!');
+        showNotification('🏠 ВСЁ! ПУСТАЯ ХАТА! Теперь только выигрывать!', 'warning', 5000);
     }
 
     hideFurnitureModal();
 }
 
-// Shop System - CENSORED (Energy instead of Alcohol)
+// Shop System - Bonus items
 const shopItems = {
-    'energy': { name: '⚡ Энергетик', price: 100, effect: 10, type: 'energy' },
-    'double': { name: '🔋 Двойной заряд', price: 300, effect: 25, type: 'energy' },
-    'mega': { name: '⚡ Мега заряд', price: 500, effect: 40, type: 'energy' },
-    'ultra': { name: '💎 Ультра буст', price: 1000, effect: 50, type: 'energy' }
+    'winboost': { name: '💰 Бонус удачи', price: 1000, effect: 'win_bonus', value: 0.1 },
+    'luckboost': { name: '🍀 Бонус удачи', price: 2000, effect: 'luck_bonus', value: 0.15 },
+    'megabonus': { name: '⭐ Мега бонус', price: 5000, effect: 'mega_bonus', value: 0.25 },
+    'jackpot': { name: '💎 Джекпот буст', price: 10000, effect: 'jackpot_bonus', value: 10000 }
 };
 
 function showShopModal() {
     renderShopModal();
-    document.getElementById('shopModal').classList.add('active');
+    const modal = document.getElementById('shopModal');
+    if (modal) modal.classList.add('active');
 }
 
 function hideShopModal() {
-    document.getElementById('shopModal').classList.remove('active');
+    const modal = document.getElementById('shopModal');
+    if (modal) modal.classList.remove('active');
 }
 
 function renderShopModal() {
@@ -503,15 +562,13 @@ function renderShopModal() {
     if (!shopList) return;
 
     shopList.innerHTML = Object.entries(shopItems).map(([id, item]) => `
-        <div class="shop-item ${item.type}" onclick="buyItem('${id}')">
+        <div class="shop-item ${item.effect}" onclick="buyItem('${id}')">
             <span class="shop-icon">${item.name.split(' ')[0]}</span>
             <span class="shop-name">${item.name.split(' ').slice(1).join(' ')}</span>
             <span class="shop-price">${item.price}</span>
-            <span class="shop-effect">+${item.effect}%</span>
+            <span class="shop-effect">+${Math.round(item.value * 100)}% бонус</span>
         </div>
     `).join('');
-
-    updateEnergyDisplay();
 }
 
 function buyItem(itemId) {
@@ -519,95 +576,26 @@ function buyItem(itemId) {
     if (!item) return;
 
     if (balance < item.price) {
-        alert('❌ Недостаточно денег!');
+        showNotification('❌ Недостаточно денег!', 'lose');
         return;
     }
 
     balance -= item.price;
-
-    // Apply upgrade bonuses to energy
-    const reduction = getEnergyReduction();
-    const actualEffect = item.effect * (1 - reduction);
-
-    energy = Math.min(100, energy + actualEffect);
+    
+    // Apply bonus
+    if (item.effect === 'jackpot_bonus') {
+        jackpot += item.value;
+        showNotification(`${item.name} куплен! Джекпот: ${jackpot}`, 'win', 4000);
+    } else {
+        showNotification(`${item.name} куплен! Баланс: ${balance}`, 'win', 4000);
+    }
+    
     updateStats();
-    updateEnergyDisplay();
-
-    let message = `${item.name} куплен!\n\nЭнергия: ${energy}%`;
-    if (reduction > 0) {
-        message += `\n\n⚡ Бонус апгрейдов: -${Math.round(reduction * 100)}% к энергии!`;
-    }
-    alert(message);
-
-    // Check for overload
-    if (energy >= 100) {
-        triggerOverloadMode();
-    }
-
     renderShopModal();
 }
 
 function updateEnergyDisplay() {
-    const bar = document.getElementById('intoxication-bar');
-    const value = document.getElementById('intoxication-value');
-    if (bar && value) {
-        bar.style.width = energy + '%';
-        value.textContent = energy + '%';
-
-        if (energy > 75) {
-            bar.style.background = 'linear-gradient(90deg, #e74c3c, #c0392b)';
-        } else if (energy > 50) {
-            bar.style.background = 'linear-gradient(90deg, #f39c12, #e67e22)';
-        } else if (energy > 25) {
-            bar.style.background = 'linear-gradient(90deg, #f1c40f, #f39c12)';
-        } else {
-            bar.style.background = 'linear-gradient(90deg, #27ae60, #2ecc71)';
-        }
-    }
-}
-
-function triggerOverloadMode() {
-    // Lose all money
-    const lostMoney = balance;
-    balance = 0;
-
-    // Lose random upgrade
-    let lostUpgrade = null;
-    if (upgradesOwned.length > 0) {
-        const randomIndex = Math.floor(Math.random() * upgradesOwned.length);
-        lostUpgrade = upgradesOwned[randomIndex];
-        upgradesOwned.splice(randomIndex, 1);
-    }
-
-    // Get random credit debt
-    const newDebt = Math.floor(Math.random() * 10000) + 5000;
-    credit += newDebt;
-
-    updateStats();
-    renderUpgradesModal();
-
-    const upgradeNames = {
-        'kidney': 'Метаболизм',
-        'liver': 'Выносливость',
-        'eye': 'Зоркость',
-        'lung': 'Дыхание',
-        'heart': 'Удача',
-        'brain': 'Интеллект',
-        'stomach': 'Железный желудок',
-        'skin': 'Молодость'
-    };
-
-    alert(`🚨 ПЕРЕБРАЛ! 🚨\n\n💸 Потеряно: ${lostMoney} монет\n⚡ Потерян апгрейд: ${lostUpgrade ? upgradeNames[lostUpgrade] : 'ничего'}\n💳 Кредит: ${newDebt} монет\n\nТеперь ты в минусе...`);
-
-    // Start collectors immediately
-    if (credit > 10000 && !collectorsActive) {
-        startCollectors();
-    }
-
-    // Break screen if debt too high
-    if (credit > 50000 && !screenBroken) {
-        breakScreen();
-    }
+    // Energy system removed
 }
 
 // Jackpot growth
@@ -616,7 +604,15 @@ setInterval(() => {
     updateStats();
 }, 2000);
 
-// Initialize
-updateStats();
-renderUpgradesModal();
-renderShopModal();
+// Initialize after DOM is ready
+function initGame() {
+    updateStats();
+    renderUpgradesModal();
+}
+
+// Wait for DOM
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initGame);
+} else {
+    initGame();
+}

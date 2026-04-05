@@ -4,12 +4,44 @@ let player = null;
 let adShown = false;
 let lastAdTime = 0;
 const AD_COOLDOWN = 30000; // 30 seconds between ads
+let currentLang = 'ru'; // Default language
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', () => {
+    // Disable context menu
+    document.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        return false;
+    });
+
+    // Prevent scroll/touch actions that could cause browser scroll
+    document.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+    }, { passive: false });
+
+    document.addEventListener('wheel', (e) => {
+        e.preventDefault();
+    }, { passive: false });
+
+    // Prevent text selection during gameplay
+    document.addEventListener('mousedown', (e) => {
+        if (e.target.closest('.game-area')) {
+            e.preventDefault();
+        }
+    });
+
+    // Initialize Yandex SDK (silently handle errors)
+    initYandexSDK().catch(() => {
+        // SDK not available - running in standalone mode, this is fine
+    });
+});
 
 // Initialize Yandex SDK
 function initYandexSDK() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         if (typeof YaGames === 'undefined') {
             console.log('Yandex SDK not available - running in standalone mode');
+            hideLoadingScreen();
             resolve(null);
             return;
         }
@@ -17,28 +49,43 @@ function initYandexSDK() {
         YaGames.init()
             .then(ysdkInstance => {
                 ysdk = ysdkInstance;
-                console.log('Yandex SDK initialized');
-                
+
+                // Auto-detect language
+                try {
+                    currentLang = ysdk.environment.i18n.lang || 'ru';
+                    document.documentElement.lang = currentLang;
+                } catch (e) {
+                    // Ignore environment errors in local testing
+                }
+
                 // Initialize player for saves
                 return ysdk.getPlayer();
             })
             .then(playerInstance => {
                 player = playerInstance;
-                console.log('Player initialized');
-                
+
                 // Load saved data
                 loadGameData();
-                
+
                 // Hide loading screen
                 hideLoadingScreen();
-                
+
                 // Show interstitial ad on game start
                 showInterstitialAd();
-                
+
+                // Signal GAME READY
+                try {
+                    if (ysdk.features?.LoadingAPI?.ready) {
+                        ysdk.features.LoadingAPI.ready();
+                    }
+                } catch (e) {
+                    // Ignore errors
+                }
+
                 resolve(ysdk);
             })
             .catch(err => {
-                console.error('Yandex SDK initialization error:', err);
+                // Silently handle SDK errors - this is normal for local testing
                 hideLoadingScreen();
                 resolve(null);
             });
@@ -63,54 +110,84 @@ function showInterstitialAd() {
     if (now - lastAdTime < AD_COOLDOWN) {
         return;
     }
-    
-    if (ysdk) {
+
+    if (!ysdk) return;
+
+    try {
+        // Signal GAME START
+        if (ysdk.features?.GameplayAPI?.start) {
+            ysdk.features.GameplayAPI.start();
+        }
+
         ysdk.adv.showFullscreenAdv({
             callbacks: {
                 onClose: function(wasShown) {
-                    console.log('Interstitial ad closed');
                     lastAdTime = Date.now();
                     adShown = false;
+                    try {
+                        if (ysdk.features?.GameplayAPI?.start) {
+                            ysdk.features.GameplayAPI.start();
+                        }
+                    } catch (e) {}
                 },
                 onError: function(error) {
-                    console.log('Interstitial ad error:', error);
                     lastAdTime = Date.now();
                 }
             }
         });
+    } catch (e) {
+        // Ignore ad errors - this is normal for local testing
     }
+}
+
+// Signal GAME STOP (for pauses, modals, etc.)
+function gameStop() {
+    try {
+        if (ysdk && ysdk.features?.GameplayAPI?.stop) {
+            ysdk.features.GameplayAPI.stop();
+        }
+    } catch (e) {}
+}
+
+// Signal GAME START (resume)
+function gameStart() {
+    try {
+        if (ysdk && ysdk.features?.GameplayAPI?.start) {
+            ysdk.features.GameplayAPI.start();
+        }
+    } catch (e) {}
 }
 
 // Show Rewarded Ad (for bonuses)
 function showRewardedAd(type) {
     if (!ysdk) {
-        alert('Реклама недоступна в режиме разработки');
+        showNotification('Реклама недоступна в режиме разработки', 'info');
         applyAdReward(type);
         return;
     }
 
-    ysdk.adv.showRewardedVideo({
-        callbacks: {
-            onOpen: () => {
-                console.log('Rewarded video opened');
-                // Pause game logic here if needed
-            },
-            onRewarded: () => {
-                console.log('Rewarded!');
-                applyAdReward(type);
-            },
-            onClose: () => {
-                console.log('Rewarded video closed');
-                lastAdTime = Date.now();
-                hideAdRewardModal();
-                // Resume game logic here if needed
-            },
-            onError: (e) => {
-                console.log('Error while open rewarded video:', e);
-                alert('Ошибка загрузки рекламы. Попробуйте позже.');
+    try {
+        ysdk.adv.showRewardedVideo({
+            callbacks: {
+                onOpen: () => {
+                    gameStop();
+                },
+                onRewarded: () => {
+                    applyAdReward(type);
+                },
+                onClose: () => {
+                    lastAdTime = Date.now();
+                    hideAdRewardModal();
+                    gameStart();
+                },
+                onError: (e) => {
+                    showNotification('Ошибка загрузки рекламы. Попробуйте позже.', 'lose');
+                }
             }
-        }
-    });
+        });
+    } catch (e) {
+        showNotification('Реклама недоступна', 'info');
+    }
 }
 
 // Apply reward from ad
@@ -120,27 +197,27 @@ function applyAdReward(type) {
             balance += 1000;
             updateStats();
             saveGameData();
-            alert('🎁 +1000 монет!\n\nБаланс: ' + balance);
+            showNotification('🎁 +1000 монет! Баланс: ' + balance, 'win', 4000);
             break;
-            
+
         case 'bonus':
             // Temporary win bonus (can be implemented in game logic)
             window.adBonusMultiplier = 2;
             setTimeout(() => {
                 window.adBonusMultiplier = 1;
             }, 300000); // 5 minutes
-            alert('🎰 x2 к выигрышу на 5 минут!');
+            showNotification('🎰 x2 к выигрышу на 5 минут!', 'win', 4000);
             break;
-            
+
         case 'debt':
             if (credit > 0) {
                 const reduction = Math.floor(credit * 0.1);
                 credit -= reduction;
                 updateStats();
                 saveGameData();
-                alert('💳 Долг уменьшен на ' + reduction + ' монет!\n\nОстаток: ' + credit);
+                showNotification('💳 Долг уменьшен на ' + reduction + ' монет! Остаток: ' + credit, 'win', 4000);
             } else {
-                alert('У вас нет долга! Выберите другой бонус.');
+                showNotification('У вас нет долга! Выберите другой бонус.', 'info');
             }
             break;
     }
@@ -154,14 +231,14 @@ function saveGameData() {
             balance: balance,
             jackpot: jackpot,
             credit: credit,
-            energy: energy, // was intoxication
             furnitureOwned: furnitureOwned,
-            upgradesOwned: upgradesOwned, // was organsOwned
+            upgradesOwned: upgradesOwned,
             screenBroken: screenBroken,
             povertyMode: povertyMode
         };
-        localStorage.setItem('casinoSaveData', JSON.stringify(gameData));
-        console.log('Game saved to localStorage');
+        try {
+            localStorage.setItem('casinoSaveData', JSON.stringify(gameData));
+        } catch (e) {}
         return;
     }
 
@@ -169,22 +246,19 @@ function saveGameData() {
         balance: balance,
         jackpot: jackpot,
         credit: credit,
-        energy: energy, // was intoxication
         furnitureOwned: furnitureOwned,
-        upgradesOwned: upgradesOwned, // was organsOwned
+        upgradesOwned: upgradesOwned,
         screenBroken: screenBroken,
         povertyMode: povertyMode,
         lastSave: Date.now()
     };
 
     player.setData(gameData)
-        .then(() => {
-            console.log('Game data saved to Yandex Cloud');
-        })
-        .catch(err => {
-            console.error('Save error:', err);
+        .catch(() => {
             // Fallback to localStorage
-            localStorage.setItem('casinoSaveData', JSON.stringify(gameData));
+            try {
+                localStorage.setItem('casinoSaveData', JSON.stringify(gameData));
+            } catch (e) {}
         });
 }
 
@@ -192,16 +266,13 @@ function saveGameData() {
 function loadGameData() {
     if (!player) {
         // Load from localStorage as fallback
-        const savedData = localStorage.getItem('casinoSaveData');
-        if (savedData) {
-            try {
+        try {
+            const savedData = localStorage.getItem('casinoSaveData');
+            if (savedData) {
                 const data = JSON.parse(savedData);
                 applyGameData(data);
-                console.log('Game loaded from localStorage');
-            } catch (e) {
-                console.error('Load error:', e);
             }
-        }
+        } catch (e) {}
         return;
     }
 
@@ -209,25 +280,17 @@ function loadGameData() {
         .then(data => {
             if (data && Object.keys(data).length > 0) {
                 applyGameData(data);
-                console.log('Game loaded from Yandex Cloud');
-            } else {
-                // No saved data, use defaults
-                console.log('No saved data found, using defaults');
             }
         })
-        .catch(err => {
-            console.error('Load error:', err);
+        .catch(() => {
             // Try localStorage fallback
-            const savedData = localStorage.getItem('casinoSaveData');
-            if (savedData) {
-                try {
+            try {
+                const savedData = localStorage.getItem('casinoSaveData');
+                if (savedData) {
                     const data = JSON.parse(savedData);
                     applyGameData(data);
-                    console.log('Game loaded from localStorage (fallback)');
-                } catch (e) {
-                    console.error('Fallback load error:', e);
                 }
-            }
+            } catch (e) {}
         });
 }
 
@@ -236,37 +299,16 @@ function applyGameData(data) {
     if (data.balance !== undefined) balance = data.balance;
     if (data.jackpot !== undefined) jackpot = data.jackpot;
     if (data.credit !== undefined) credit = data.credit;
-    if (data.energy !== undefined) energy = data.energy; // was intoxication
     if (data.furnitureOwned !== undefined) furnitureOwned = data.furnitureOwned;
-    if (data.upgradesOwned !== undefined) upgradesOwned = data.upgradesOwned; // was organsOwned
+    if (data.upgradesOwned !== undefined) upgradesOwned = data.upgradesOwned;
     if (data.screenBroken !== undefined) screenBroken = data.screenBroken;
     if (data.povertyMode !== undefined) povertyMode = data.povertyMode;
-    
+
     updateStats();
-    updateEnergyDisplay(); // was updateIntoxicationDisplay
-    
+
     // Restore screen state if broken
     if (screenBroken && data.credit > 50000) {
-        breakScreen();
-    }
-    
-    // Restart credit timer if needed
-    if (credit > 0 && !creditTimer) {
-        creditTimer = setInterval(() => {
-            if (credit > 0) {
-                credit = Math.floor(credit * 1.1);
-                updateStats();
-                saveGameData();
-
-                if (credit > 50000 && !screenBroken) {
-                    breakScreen();
-                }
-
-                if (credit > 10000 && !collectorsActive) {
-                    startCollectors();
-                }
-            }
-        }, 5000);
+        document.body.classList.add('screen-broken');
     }
 }
 
@@ -289,16 +331,13 @@ window.addEventListener('beforeunload', () => {
     saveGameData();
 });
 
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', () => {
-    initYandexSDK();
-});
-
 // Export functions for use in other scripts
 window.yandexSDK = {
     showInterstitialAd,
     showRewardedAd,
     saveGameData,
     loadGameData,
-    showAdRewardModal
+    showAdRewardModal,
+    gameStart,
+    gameStop
 };

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🎰 CASINO ROYALE 🎰</title>
-    
+    <title>Casino Royale</title>
+
     <!-- Yandex Games SDK -->
     <script src="https://yandex.ru/games/sdk/v2"></script>
     
@@ -13,11 +13,11 @@
     
     <!-- Meta tags for Yandex Games -->
     <meta name="description" content="Казино Рояль - лучшие азартные игры: слоты, рулетка, покер, блэкджек, кости и многое другое!">
-    <meta name="keywords" content="казино, слоты, рулетка, покер, блэкджек, азартные игры">
+    <meta name="keywords" content="казино, слоты, рулетка, покер, блэкджек, азартные игры, краш, щавель">
     <meta name="theme-color" content="#1a1a2e">
-    
+
     <!-- Open Graph -->
-    <meta property="og:title" content="🎰 CASINO ROYALE 🎰">
+    <meta property="og:title" content="Casino Royale">
     <meta property="og:description" content="Лучшие азартные игры в одном месте!">
     <meta property="og:type" content="website">
     
@@ -44,7 +44,7 @@
     </div>
 
     <header class="header">
-        <h1>🎰 CASINO ROYALE 🎰</h1>
+        <h1>Casino Royale</h1>
     </header>
 
     <div class="stats-bar">
@@ -63,13 +63,6 @@
         <div class="stat-item" id="credit-stat" style="display: none;">
             <div class="stat-label">💳 ДОЛГ</div>
             <div class="stat-value" id="credit-display" style="color: #e74c3c;">0</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-label">⚡ ЭНЕРГИЯ</div>
-            <div class="intoxication-container">
-                <div class="intoxication-bar" id="intoxication-bar" style="width: 0%;"></div>
-                <span class="intoxication-value" id="intoxication-value">0%</span>
-            </div>
         </div>
     </div>
 
@@ -361,11 +354,12 @@
         </main>
     </div>
 
-    <!-- Credit Button (shown when broke) -->
-    <div class="credit-section" id="credit-section" style="display: none;">
+    <!-- Bottom Buttons -->
+    <div class="credit-section" id="credit-section">
         <button class="credit-btn" onclick="showCreditModal()">💸 КРЕДИТ</button>
         <button class="furniture-btn" onclick="showFurnitureModal()">🛋️ МЕБЕЛЬ</button>
-        <button class="organs-btn" onclick="showUpgradesModal()">⚡ БИО-АПГРЕЙДЫ</button>
+        <button class="organs-btn" onclick="showUpgradesModal()">⚡ АПГРЕЙДЫ</button>
+        <button class="shop-btn-always" onclick="showShopModal()">🛒 МАГАЗИН</button>
     </div>
 
     <!-- Credit Modal -->
@@ -388,9 +382,10 @@
                     <span class="credit-desc">Куш</span>
                 </button>
             </div>
-            <p style="color: #e74c3c; font-size: 0.9em; margin-top: 15px;">⚠️ Проценты: 10% каждые 5 секунд</p>
-            <p style="color: #f39c12; font-size: 0.85em;">⚠️ При долге 50,000+ будет штраф!</p>
-            <button class="modal-btn cancel" onclick="hideCreditModal()">❌ НЕ НАДО</button>
+            <p style="color: #f39c12; font-size: 0.9em; margin-top: 15px;">⚠️ Проценты: 10% каждые 30 секунд</p>
+            <p style="color: #ffd700; font-size: 0.85em;">💡 При долге 10,000+ приедут коллекторы!</p>
+            <button class="modal-btn" onclick="repayCredit()" id="repay-credit-btn" style="background: linear-gradient(45deg, #00b894, #00a085); margin: 10px 5px;">✅ ПОГАСИТЬ ДОЛГ</button>
+            <button class="modal-btn cancel" onclick="hideCreditModal()">❌ ЗАКРЫТЬ</button>
         </div>
     </div>
 
@@ -435,63 +430,73 @@
         </div>
     </div>
 
-    <!-- Upgrades Modal (was Organs) -->
+    <!-- Upgrades Modal -->
     <div class="modal" id="upgradesModal">
         <div class="modal-content upgrades">
             <h2>⚡ БИО-АПГРЕЙДЫ</h2>
-            <p>Улучши свои способности!</p>
+            <p>Улучши свои способности! Бонусы к выигрышам:</p>
             <div class="upgrades-list">
                 <div class="upgrade-item" onclick="sellUpgrade('kidney', 5000)">
-                    <span class="upgrade-icon">🫘</span>
+                    <span class="upgrade-icon">💰</span>
                     <span class="upgrade-name">Метаболизм</span>
-                    <span class="upgrade-bonus">🫘 -20% энергии</span>
+                    <span class="upgrade-bonus">💰 +10% к выигрышам</span>
                     <span class="upgrade-price">5000</span>
                 </div>
                 <div class="upgrade-item" onclick="sellUpgrade('liver', 8000)">
-                    <span class="upgrade-icon">🟤</span>
+                    <span class="upgrade-icon">🛡️</span>
                     <span class="upgrade-name">Выносливость</span>
-                    <span class="upgrade-bonus">🟤 -30% энергии</span>
+                    <span class="upgrade-bonus">🛡️ +20% к удаче</span>
                     <span class="upgrade-price">8000</span>
                 </div>
                 <div class="upgrade-item" onclick="sellUpgrade('eye', 3000)">
                     <span class="upgrade-icon">👁️</span>
                     <span class="upgrade-name">Зоркость</span>
-                    <span class="upgrade-bonus">👁️ +5% удачи</span>
+                    <span class="upgrade-bonus">👁️ +5% к удаче</span>
                     <span class="upgrade-price">3000</span>
                 </div>
                 <div class="upgrade-item" onclick="sellUpgrade('lung', 6000)">
                     <span class="upgrade-icon">🫁</span>
                     <span class="upgrade-name">Дыхание</span>
-                    <span class="upgrade-bonus">🫁 Быстрее восстановление</span>
+                    <span class="upgrade-bonus">🫁 Быстрое восстановление</span>
                     <span class="upgrade-price">6000</span>
                 </div>
                 <div class="upgrade-item" onclick="sellUpgrade('heart', 10000)">
                     <span class="upgrade-icon">❤️</span>
                     <span class="upgrade-name">Удача</span>
-                    <span class="upgrade-bonus">❤️ +10% к выигрышам</span>
+                    <span class="upgrade-bonus">❤️ +15% к выигрышам</span>
                     <span class="upgrade-price">10000</span>
                 </div>
                 <div class="upgrade-item" onclick="sellUpgrade('brain', 15000)">
                     <span class="upgrade-icon">🧠</span>
                     <span class="upgrade-name">Интеллект</span>
-                    <span class="upgrade-bonus">🧠 Видишь шансы</span>
+                    <span class="upgrade-bonus">🧠 Умные решения</span>
                     <span class="upgrade-price">15000</span>
                 </div>
                 <div class="upgrade-item" onclick="sellUpgrade('stomach', 7000)">
-                    <span class="upgrade-icon">🤢</span>
+                    <span class="upgrade-icon">💪</span>
                     <span class="upgrade-name">Железный желудок</span>
-                    <span class="upgrade-bonus">🤢 +50% к энергии</span>
+                    <span class="upgrade-bonus">💪 +10% к выигрышам</span>
                     <span class="upgrade-price">7000</span>
                 </div>
                 <div class="upgrade-item" onclick="sellUpgrade('skin', 4000)">
                     <span class="upgrade-icon">👶</span>
                     <span class="upgrade-name">Молодость</span>
-                    <span class="upgrade-bonus">👶 Свежий вид</span>
+                    <span class="upgrade-bonus">👶 Молодой вид</span>
                     <span class="upgrade-price">4000</span>
                 </div>
             </div>
             <p style="color: #f39c12; font-size: 0.9em;">⚠️ Апгрейды необратимы!</p>
             <button class="modal-btn cancel" onclick="hideUpgradesModal()">❌ ЗАКРЫТЬ</button>
+        </div>
+    </div>
+
+    <!-- Shop Modal -->
+    <div class="modal" id="shopModal">
+        <div class="modal-content">
+            <h2>🛒 МАГАЗИН БОНУСОВ</h2>
+            <p>Купи бонусы для улучшения игры!</p>
+            <div class="shop-list"></div>
+            <button class="modal-btn cancel" onclick="hideShopModal()">❌ ЗАКРЫТЬ</button>
         </div>
     </div>
 
@@ -518,8 +523,8 @@
         </div>
     </div>
 
-    <script src="js/yandex-sdk.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/yandex-sdk.js"></script>
     <script src="js/game-slots.js"></script>
     <script src="js/game-roulette.js"></script>
     <script src="js/game-cards.js"></script>

@@ -2,6 +2,16 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
 }
 
 body {
@@ -28,6 +38,7 @@ body {
     -webkit-text-fill-color: transparent;
     background-clip: text;
     animation: glow 2s ease-in-out infinite alternate;
+    letter-spacing: 3px;
 }
 
 @keyframes glow {
@@ -68,6 +79,19 @@ body {
     font-size: 1.4em;
     font-weight: bold;
     text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    transition: all 0.3s ease;
+}
+
+.stat-value.balance-up {
+    color: #00b894;
+    transform: scale(1.2);
+    text-shadow: 0 0 20px rgba(0, 184, 148, 0.8);
+}
+
+.stat-value.balance-down {
+    color: #e74c3c;
+    transform: scale(0.9);
+    text-shadow: 0 0 20px rgba(231, 76, 60, 0.8);
 }
 
 /* Main Container */
@@ -176,17 +200,34 @@ body {
 }
 
 @keyframes reelSpin {
-    0%, 100% { transform: translateY(-5px); }
-    50% { transform: translateY(5px); }
+    0% { transform: translateY(-8px) rotate(-2deg) scale(0.95); opacity: 0.7; }
+    25% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+    50% { transform: translateY(8px) rotate(2deg) scale(0.95); opacity: 0.7; }
+    75% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+    100% { transform: translateY(-8px) rotate(-2deg) scale(0.95); opacity: 0.7; }
 }
 
 .slot-reel.winner {
     animation: winnerPulse 0.5s ease-in-out infinite alternate;
+    border-color: #00b894 !important;
 }
 
 @keyframes winnerPulse {
-    from { transform: scale(1); box-shadow: 0 0 20px #ffd700; }
-    to { transform: scale(1.1); box-shadow: 0 0 40px #ffd700; }
+    from { transform: scale(1); box-shadow: 0 0 20px #ffd700; border-color: #ffd700; }
+    to { transform: scale(1.08); box-shadow: 0 0 40px #00b894; border-color: #00b894; }
+}
+
+.slot-reel.loser {
+    animation: loserShake 0.5s ease-in-out;
+    border-color: #e74c3c !important;
+}
+
+@keyframes loserShake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-5px); }
+    40% { transform: translateX(5px); }
+    60% { transform: translateX(-3px); }
+    80% { transform: translateX(3px); }
 }
 
 /* Roulette */
@@ -707,27 +748,44 @@ body {
 }
 
 .message {
-    font-size: 1.3em;
+    font-size: 1.4em;
     text-align: center;
-    min-height: 40px;
+    min-height: 50px;
     margin-top: 20px;
-    padding: 15px;
+    padding: 18px 25px;
     border-radius: 15px;
-    transition: all 0.3s ease;
+    transition: opacity 0.3s ease;
+    font-weight: bold;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    border: 3px solid transparent;
+    display: none;
+    opacity: 0;
 }
 
 .message.win {
     background: linear-gradient(45deg, #00b894, #00a085);
+    color: #fff;
+    border-color: #00ffcc;
     animation: messagePulse 0.5s ease-in-out infinite alternate;
+    box-shadow: 0 0 30px rgba(0, 184, 148, 0.6);
 }
 
 .message.lose {
-    background: linear-gradient(45deg, #d63031, #c0392b);
+    background: linear-gradient(45deg, #e74c3c, #c0392b);
+    color: #fff;
+    border-color: #ff6b6b;
+    box-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+}
+
+.message.info {
+    background: linear-gradient(45deg, #3498db, #2980b9);
+    color: #fff;
+    border-color: #5dade2;
 }
 
 @keyframes messagePulse {
-    from { transform: scale(1); }
-    to { transform: scale(1.02); }
+    from { transform: scale(1); box-shadow: 0 0 20px rgba(0, 184, 148, 0.4); }
+    to { transform: scale(1.03); box-shadow: 0 0 40px rgba(0, 184, 148, 0.8); }
 }
 
 /* Paytable */
@@ -2032,12 +2090,18 @@ body {
     -webkit-user-select: none;
 }
 
-/* Smooth scrolling */
-html {
-    scroll-behavior: smooth;
-}
-
 /* Prevent pull-to-refresh on mobile */
 body {
     overscroll-behavior-y: contain;
+}
+
+/* Notification animations */
+@keyframes notifSlideIn {
+    from { transform: translateX(-50%) translateY(-30px); opacity: 0; }
+    to { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
+
+@keyframes notifSlideOut {
+    from { transform: translateX(-50%) translateY(0); opacity: 1; }
+    to { transform: translateX(-50%) translateY(-30px); opacity: 0; }
 }

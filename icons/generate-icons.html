@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Icon Generator - CASINO ROYALE</title>
+    <title>Icon Generator - Casino Royale</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0c0c0c 100%);
@@ -21,7 +21,7 @@
             padding: 40px 20px;
             color: #fff;
         }
-        
+
         h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
@@ -31,19 +31,19 @@
             background-clip: text;
             text-align: center;
         }
-        
+
         .subtitle {
             color: #aaa;
             margin-bottom: 40px;
             text-align: center;
         }
-        
+
         .lang-switch {
             display: flex;
             gap: 10px;
             margin-bottom: 30px;
         }
-        
+
         .lang-btn {
             padding: 10px 25px;
             border: 2px solid #ffd700;
@@ -54,26 +54,26 @@
             font-weight: bold;
             transition: all 0.3s ease;
         }
-        
+
         .lang-btn.active,
         .lang-btn:hover {
             background: #ffd700;
             color: #1a1a2e;
         }
-        
+
         .section {
             width: 100%;
             max-width: 1200px;
             margin: 40px 0;
         }
-        
+
         .section-title {
             font-size: 1.8em;
             color: #ffd700;
             margin-bottom: 20px;
             text-align: center;
         }
-        
+
         .preview-container {
             display: flex;
             gap: 30px;
@@ -81,11 +81,11 @@
             justify-content: center;
             margin: 30px 0;
         }
-        
+
         .icon-group {
             text-align: center;
         }
-        
+
         .icon-row {
             display: flex;
             gap: 30px;
@@ -93,47 +93,48 @@
             margin: 20px 0;
             flex-wrap: wrap;
         }
-        
+
         .icon-wrapper {
             text-align: center;
+            position: relative;
         }
-        
+
         .icon-preview {
-            border-radius: 25%;
+            border-radius: 0;
             box-shadow: 0 20px 60px rgba(255, 215, 0, 0.4);
             border: 4px solid rgba(255, 255, 255, 0.2);
             background: #fff;
         }
-        
+
         .icon-maskable {
             border-radius: 50%;
             box-shadow: 0 20px 60px rgba(0, 184, 148, 0.4);
             border: 4px solid rgba(0, 184, 148, 0.3);
         }
-        
+
         .icon-192 {
             width: 192px;
             height: 192px;
         }
-        
-        .icon-512 {
-            width: 512px;
-            height: 512px;
+
+        .icon-256 {
+            width: 256px;
+            height: 256px;
         }
-        
+
         .icon-label {
             margin-top: 15px;
             font-size: 1.1em;
             color: #ffd700;
             font-weight: bold;
         }
-        
-        .icon-size {
-            font-size: 0.85em;
-            color: #888;
+
+        .icon-name {
+            font-size: 0.9em;
+            color: #aaa;
             margin-top: 5px;
         }
-        
+
         .badge {
             display: inline-block;
             padding: 4px 12px;
@@ -142,17 +143,17 @@
             font-weight: bold;
             margin-top: 8px;
         }
-        
+
         .badge-maskable {
             background: linear-gradient(45deg, #00b894, #00a085);
             color: white;
         }
-        
+
         .badge-standard {
             background: linear-gradient(45deg, #666, #444);
             color: white;
         }
-        
+
         .buttons {
             display: flex;
             gap: 15px;
@@ -160,7 +161,7 @@
             justify-content: center;
             margin: 30px 0;
         }
-        
+
         .download-btn {
             padding: 14px 28px;
             font-size: 1em;
@@ -175,32 +176,32 @@
             align-items: center;
             gap: 8px;
         }
-        
-        .btn-192 {
-            background: linear-gradient(45deg, #ffd700, #ffaa00);
-            color: #1a1a2e;
-        }
-        
-        .btn-512 {
-            background: linear-gradient(45deg, #ff6b6b, #ee5a5a);
-            color: white;
-        }
-        
-        .btn-maskable {
-            background: linear-gradient(45deg, #00b894, #00a085);
-            color: white;
-        }
-        
-        .btn-all {
-            background: linear-gradient(45deg, #9b59b6, #8e44ad);
-            color: white;
-        }
-        
+
         .download-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
         }
-        
+
+        .btn-192 {
+            background: linear-gradient(45deg, #ffd700, #ffaa00);
+            color: #1a1a2e;
+        }
+
+        .btn-512 {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a5a);
+            color: white;
+        }
+
+        .btn-maskable {
+            background: linear-gradient(45deg, #00b894, #00a085);
+            color: white;
+        }
+
+        .btn-all {
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+            color: white;
+        }
+
         .info-box {
             background: rgba(255, 255, 255, 0.05);
             border: 2px solid rgba(255, 215, 0, 0.3);
@@ -209,439 +210,289 @@
             max-width: 800px;
             margin: 30px auto;
         }
-        
+
         .info-box h3 {
             color: #ffd700;
             margin-bottom: 15px;
         }
-        
-        .info-box p {
+
+        .info-box p, .info-box li {
             color: #ccc;
             line-height: 1.6;
             margin: 10px 0;
         }
-        
+
         .info-box ol, .info-box ul {
             margin-left: 20px;
             line-height: 1.8;
-            color: #ccc;
         }
-        
-        .info-box li {
-            margin: 8px 0;
-        }
-        
+
         .highlight {
             color: #ffd700;
             font-weight: bold;
         }
-        
-        .green {
-            color: #00b894;
+
+        canvas {
+            display: none;
         }
-        
-        .comparison {
+
+        .game-icons-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
             margin: 30px 0;
         }
-        
-        .comparison-item {
+
+        .game-icon-card {
             background: rgba(0, 0, 0, 0.3);
             border-radius: 15px;
             padding: 20px;
             text-align: center;
-        }
-        
-        .comparison-item h4 {
-            color: #ffd700;
-            margin-bottom: 15px;
-        }
-        
-        .shape-preview {
-            width: 80px;
-            height: 80px;
-            margin: 10px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2em;
-            background: linear-gradient(45deg, #ffd700, #ff6b6b);
-            border-radius: 50%;
-        }
-        
-        .safe-zone-overlay {
-            position: relative;
-        }
-        
-        .safe-zone-guide {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            border: 3px dashed rgba(0, 255, 0, 0.7);
-            background: rgba(0, 255, 0, 0.1);
-            pointer-events: none;
-        }
-        
-        canvas {
-            display: none;
-        }
-        
-        .text-content {
-            max-width: 900px;
-            margin: 40px auto;
-        }
-        
-        .text-section {
-            background: rgba(255, 255, 255, 0.05);
             border: 2px solid rgba(255, 215, 0, 0.2);
-            border-radius: 20px;
-            padding: 30px;
-            margin: 30px 0;
+            transition: all 0.3s ease;
         }
-        
-        .text-section h2 {
+
+        .game-icon-card:hover {
+            border-color: #ffd700;
+            transform: translateY(-5px);
+        }
+
+        .game-icon-card canvas {
+            display: block;
+            margin: 0 auto;
+            border-radius: 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .game-icon-card h4 {
             color: #ffd700;
-            margin-bottom: 20px;
+            margin: 15px 0 5px;
+            font-size: 1.2em;
         }
-        
-        .copy-btn {
-            background: linear-gradient(45deg, #00b894, #00a085);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 0.9em;
-            margin-bottom: 15px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+
+        .game-icon-card .emoji-preview {
+            font-size: 4em;
+            margin: 10px 0;
+            animation: iconBounce 2s ease-in-out infinite;
         }
-        
-        .text-box {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            padding: 20px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.95em;
-            line-height: 1.6;
-            color: #0f0;
-            white-space: pre-wrap;
-            overflow-x: auto;
+
+        @keyframes iconBounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-10px) scale(1.1); }
         }
-        
-        .tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 20px 0;
+
+        @keyframes iconSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
-        
-        .tag {
-            background: rgba(255, 215, 0, 0.2);
-            color: #ffd700;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.9em;
-            border: 1px solid rgba(255, 215, 0, 0.3);
+
+        @keyframes iconPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+
+        @keyframes iconShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px) rotate(-5deg); }
+            75% { transform: translateX(5px) rotate(5deg); }
+        }
+
+        @keyframes iconGlow {
+            0%, 100% { filter: drop-shadow(0 0 10px currentColor); }
+            50% { filter: drop-shadow(0 0 25px currentColor); }
+        }
+
+        .anim-bounce { animation: iconBounce 2s ease-in-out infinite; }
+        .anim-spin { animation: iconSpin 3s linear infinite; }
+        .anim-pulse { animation: iconPulse 1.5s ease-in-out infinite; }
+        .anim-shake { animation: iconShake 0.5s ease-in-out infinite; }
+        .anim-glow { animation: iconGlow 2s ease-in-out infinite; }
+
+        /* Notification animations */
+        @keyframes genNotifIn {
+            from { transform: translateX(-50%) translateY(-30px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+
+        @keyframes genNotifOut {
+            from { transform: translateX(-50%) translateY(0); opacity: 1; }
+            to { transform: translateX(-50%) translateY(-30px); opacity: 0; }
         }
     </style>
 </head>
 <body>
-    <h1>🎰 CASINO ROYALE</h1>
-    <p class="subtitle" data-ru="Генератор графики для Яндекс Игр" data-en="Graphics Generator for Yandex Games">Генератор графики для Яндекс Игр</p>
-    
+    <h1>Casino Royale</h1>
+    <p class="subtitle" data-ru="Генератор иконок для игр — Яндекс Игры" data-en="Game Icons Generator — Yandex Games">Генератор иконок для игр — Яндекс Игры</p>
+
     <div class="lang-switch">
         <button class="lang-btn active" onclick="setLang('ru')">🇷🇺 Русский</button>
         <button class="lang-btn" onclick="setLang('en')">🇬🇧 English</button>
     </div>
-    
-    <!-- MASKABLE ICONS -->
+
+    <!-- GAME ICONS WITH ANIMATIONS -->
     <div class="section">
-        <h2 class="section-title" data-ru="🔵 Maskable Иконки (Рекомендуется)" data-en="🔵 Maskable Icons (Recommended)">🔵 Maskable Иконки (Рекомендуется)</h2>
-        <p style="text-align: center; color: #aaa; margin-bottom: 20px;" 
-           data-ru="Maskable иконки имеют безопасную зону 50% и адаптируются под любую форму на Android" 
-           data-en="Maskable icons have 50% safe zone and adapt to any shape on Android">
-            Maskable иконки имеют безопасную зону 50% и адаптируются под любую форму на Android
+        <h2 class="section-title" data-ru="🎮 Иконки Игр с Анимациями" data-en="🎮 Game Icons with Animations">🎮 Иконки Игр с Анимациями</h2>
+        <p style="text-align: center; color: #aaa; margin-bottom: 20px;"
+           data-ru="Каждая игра имеет свою иконку с уникальной анимацией. Прямоугольный контур (без скруглений) по требованиям Яндекс.Игр."
+           data-en="Each game has its own icon with unique animation. Rectangular outline (no rounded corners) per Yandex Games requirements.">
+            Каждая игра имеет свою иконку с уникальной анимацией. Прямоугольный контур (без скруглений) по требованиям Яндекс.Игр.
         </p>
-        
-        <div class="preview-container">
-            <div class="icon-group">
-                <div class="icon-row">
-                    <div class="icon-wrapper">
-                        <div class="safe-zone-overlay">
-                            <canvas id="canvas-maskable-192" width="192" height="192" class="icon-preview icon-maskable icon-192"></canvas>
-                            <div class="safe-zone-guide" style="width: 96px; height: 96px;"></div>
-                        </div>
-                        <div class="icon-label">192×192</div>
-                        <div class="icon-size" data-ru="Maskable" data-en="Maskable">Maskable</div>
-                        <span class="badge badge-maskable" data-ru="✓ Для Android" data-en="✓ For Android">✓ Для Android</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="icon-group">
-                <div class="icon-row">
-                    <div class="icon-wrapper">
-                        <div class="safe-zone-overlay">
-                            <canvas id="canvas-maskable-512" width="512" height="512" class="icon-preview icon-maskable icon-512"></canvas>
-                            <div class="safe-zone-guide" style="width: 256px; height: 256px;"></div>
-                        </div>
-                        <div class="icon-label">512×512</div>
-                        <div class="icon-size" data-ru="Maskable" data-en="Maskable">Maskable</div>
-                        <span class="badge badge-maskable" data-ru="✓ Для Android" data-en="✓ For Android">✓ Для Android</span>
-                    </div>
-                </div>
-            </div>
+
+        <div class="game-icons-grid" id="game-icons-grid">
+            <!-- Icons will be generated here by JavaScript -->
         </div>
-        
+
         <div class="buttons">
-            <button class="download-btn btn-maskable" onclick="downloadIcon(192, true)">📥 192 Maskable</button>
-            <button class="download-btn btn-maskable" onclick="downloadIcon(512, true)">📥 512 Maskable</button>
+            <button class="download-btn btn-all" onclick="downloadAllGameIcons()">📦 <span data-ru="Скачать все иконки игр" data-en="Download All Game Icons">Скачать все иконки игр</span></button>
         </div>
     </div>
-    
-    <!-- STANDARD ICONS -->
+
+    <!-- MAIN APP ICONS -->
     <div class="section">
-        <h2 class="section-title" data-ru="📱 Обычные Иконки" data-en="📱 Standard Icons">📱 Обычные Иконки</h2>
-        
+        <h2 class="section-title" data-ru="📱 Основная Иконка Приложения" data-en="📱 Main App Icons">📱 Основная Иконка Приложения</h2>
+
         <div class="preview-container">
             <div class="icon-group">
                 <div class="icon-row">
                     <div class="icon-wrapper">
                         <canvas id="canvas-192" width="192" height="192" class="icon-preview icon-192"></canvas>
                         <div class="icon-label">192×192</div>
-                        <div class="icon-size" data-ru="Стандартная" data-en="Standard">Стандартная</div>
+                        <div class="icon-name">Standard</div>
                         <span class="badge badge-standard" data-ru="Обычная" data-en="Standard">Обычная</span>
                     </div>
                 </div>
             </div>
-            
+
             <div class="icon-group">
                 <div class="icon-row">
                     <div class="icon-wrapper">
                         <canvas id="canvas-512" width="512" height="512" class="icon-preview icon-512"></canvas>
                         <div class="icon-label">512×512</div>
-                        <div class="icon-size" data-ru="Стандартная" data-en="Standard">Стандартная</div>
+                        <div class="icon-name">Standard</div>
                         <span class="badge badge-standard" data-ru="Обычная" data-en="Standard">Обычная</span>
                     </div>
                 </div>
             </div>
         </div>
-        
+
         <div class="buttons">
             <button class="download-btn btn-192" onclick="downloadIcon(192, false)">📥 192 Standard</button>
             <button class="download-btn btn-512" onclick="downloadIcon(512, false)">📥 512 Standard</button>
         </div>
     </div>
-    
+
+    <!-- MASKABLE ICONS -->
+    <div class="section">
+        <h2 class="section-title" data-ru="🔵 Maskable Иконки (Для Android)" data-en="🔵 Maskable Icons (For Android)">🔵 Maskable Иконки (Для Android)</h2>
+        <p style="text-align: center; color: #aaa; margin-bottom: 20px;"
+           data-ru="Maskable иконки адаптируются под любую форму на Android"
+           data-en="Maskable icons adapt to any shape on Android">
+            Maskable иконки адаптируются под любую форму на Android
+        </p>
+
+        <div class="preview-container">
+            <div class="icon-group">
+                <div class="icon-row">
+                    <div class="icon-wrapper">
+                        <canvas id="canvas-maskable-192" width="192" height="192" class="icon-preview icon-maskable icon-192"></canvas>
+                        <div class="icon-label">192×192</div>
+                        <div class="icon-name">Maskable</div>
+                        <span class="badge badge-maskable" data-ru="✓ Maskable" data-en="✓ Maskable">✓ Maskable</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="icon-group">
+                <div class="icon-row">
+                    <div class="icon-wrapper">
+                        <canvas id="canvas-maskable-512" width="512" height="512" class="icon-preview icon-maskable icon-512"></canvas>
+                        <div class="icon-label">512×512</div>
+                        <div class="icon-name">Maskable</div>
+                        <span class="badge badge-maskable" data-ru="✓ Maskable" data-en="✓ Maskable">✓ Maskable</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button class="download-btn btn-maskable" onclick="downloadIcon(192, true)">📥 192 Maskable</button>
+            <button class="download-btn btn-maskable" onclick="downloadIcon(512, true)">📥 512 Maskable</button>
+        </div>
+    </div>
+
     <!-- DOWNLOAD ALL -->
     <div class="section">
         <div class="buttons">
             <button class="download-btn btn-all" onclick="downloadAll()">📦 <span data-ru="Скачать всё (4 файла)" data-en="Download All (4 files)">Скачать всё (4 файла)</span></button>
         </div>
     </div>
-    
-    <!-- COMPARISON -->
-    <div class="comparison">
-        <div class="comparison-item">
-            <h4 data-ru="🔵 Круг (Pixel)" data-en="🔵 Circle (Pixel)">🔵 Круг (Pixel)</h4>
-            <div class="shape-preview">🎰</div>
-            <p style="color: #888; font-size: 0.9em;" data-ru="Обрезает углы" data-en="Cuts corners">Обрезает углы</p>
-        </div>
-        <div class="comparison-item">
-            <h4 data-ru="🔲 Квадрат" data-en="🔲 Square">🔲 Квадрат</h4>
-            <div class="shape-preview" style="border-radius: 0;">🎰</div>
-            <p style="color: #888; font-size: 0.9em;" data-ru="Полный размер" data-en="Full size">Полный размер</p>
-        </div>
-        <div class="comparison-item">
-            <h4 data-ru="📱 Скруглённый" data-en="📱 Rounded">📱 Скруглённый</h4>
-            <div class="shape-preview" style="border-radius: 20%;">🎰</div>
-            <p style="color: #888; font-size: 0.9em;" data-ru="Мягкие углы" data-en="Soft corners">Мягкие углы</p>
-        </div>
-        <div class="comparison-item">
-            <h4 data-ru="⬜ Squircle" data-en="⬜ Squircle">⬜ Squircle</h4>
-            <div class="shape-preview" style="border-radius: 35%;">🎰</div>
-            <p style="color: #888; font-size: 0.9em;" data-ru="Суперэллипс" data-en="Superellipse">Суперэллипс</p>
-        </div>
-    </div>
-    
+
     <!-- INFO BOX -->
     <div class="info-box">
         <h3 data-ru="📋 Инструкция:" data-en="📋 Instructions:">📋 Инструкция:</h3>
-        <ol data-ru="Скачайте все 4 иконки" data-en="Download all 4 icons">
-            <li><span class="highlight" data-ru="Нажмите &quot;📦 Скачать всё&quot;" data-en="Click &quot;📦 Download All&quot;">Нажмите "📦 Скачать всё"</span> <span data-ru="чтобы сохранить все 4 иконки" data-en="to save all 4 icons">чтобы сохранить все 4 иконки</span></li>
-            <li><span data-ru="Сохраните файлы в папку" data-en="Save files to folder">Сохраните файлы в папку</span> <span class="highlight">icons/</span></li>
-            <li><span data-ru="Назовите файлы:" data-en="Name files:">Назовите файлы:</span>
-                <ul>
-                    <li><span class="highlight">icon-192.png</span> — <span data-ru="обычная 192×192" data-en="standard 192×192">обычная 192×192</span></li>
-                    <li><span class="highlight">icon-512.png</span> — <span data-ru="обычная 512×512" data-en="standard 512×512">обычная 512×512</span></li>
-                    <li><span class="highlight">icon-maskable-192.png</span> — <span data-ru="maskable 192×192" data-en="maskable 192×192">maskable 192×192</span></li>
-                    <li><span class="highlight">icon-maskable-512.png</span> — <span data-ru="maskable 512×512" data-en="maskable 512×512">maskable 512×512</span></li>
-                </ul>
-            </li>
-            <li><span data-ru="Обновите" data-en="Update">Обновите</span> <span class="highlight">yandex-manifest.json</span> (<span data-ru="см. ниже" data-en="see below">см. ниже</span>)</li>
-            <li><span data-ru="Готово!" data-en="Done!">Готово!</span></li>
+        <ol>
+            <li><span class="highlight" data-ru="Скачайте иконки игр" data-en="Download game icons">Скачайте иконки игр</span> — <span data-ru="каждая игра в PNG 256×256" data-en="each game in PNG 256×256">каждая игра в PNG 256×256</span></li>
+            <li><span data-ru="Скачайте основные иконки" data-en="Download main app icons">Скачайте основные иконки</span> — <span data-ru="192×192 и 512×512" data-en="192×192 and 512×512">192×192 и 512×512</span></li>
+            <li><span data-ru="Сохраните файлы" data-en="Save files">Сохраните файлы</span></li>
+            <li><span data-ru="Готово!" data-en="Done!">Готово!</span> 🎉</li>
         </ol>
-        
-        <h3 style="color: #00b894; margin-top: 25px;">🔧 yandex-manifest.json:</h3>
-        <pre style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; overflow-x: auto; color: #0f0; font-size: 0.85em; margin-top: 10px;">{
-  "icons": [
-    {
-      "src": "icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "icons/icon-maskable-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "icons/icon-maskable-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    }
-  ]
-}</pre>
     </div>
-    
-    <!-- GAME DESCRIPTION -->
-    <div class="text-content">
-        <div class="text-section">
-            <h2 data-ru="📝 Описание игры (Русский)" data-en="📝 Game Description (Russian)">📝 Описание игры (Русский)</h2>
-            <button class="copy-btn" onclick="copyText('desc-ru')">📋 <span data-ru="Копировать" data-en="Copy">Копировать</span></button>
-            <div class="text-box" id="desc-ru">🎰 ДОБРО ПОЖАЛОВАТЬ В CASINO ROYALE! 🎰
 
-Лучшее бесплатное казино с множеством азартных игр!
-
-🎮 9 УВЛЕКАТЕЛЬНЫХ ИГР:
-• 🎰 Фруктовые слоты - классические автоматы с джекпотом
-• 🎡 Рулетка - европейская рулетка, красное/чёрное
-• 🃏 Карточки - угадай карту, удвой выигрыш
-• 🎲 Кости - бросай кости, делай ставки
-• 💣 Мины - сапёр с азартными ставками
-• 🎯 Колесо Фортуны - крути и выигрывай
-• 🃏 Блэкджек - 21 очко, обыграй дилера
-• 🂡 Покер - видео покер, собирай комбинации
-
-✨ ОСОБЕННОСТИ:
-💰 Прогрессивный джекпот
-🎁 Бонусы за рекламу
-💳 Система кредитов
-📱 Адаптивный дизайн
-💾 Облачные сохранения
-
-⚠️ 18+ Только для совершеннолетних.
-Игра не предполагает реальные деньги.</div>
-        </div>
-        
-        <div class="text-section">
-            <h2 data-ru="📝 Game Description (English)" data-en="📝 Game Description (English)">📝 Game Description (English)</h2>
-            <button class="copy-btn" onclick="copyText('desc-en')">📋 <span data-ru="Копировать" data-en="Copy">Копировать</span></button>
-            <div class="text-box" id="desc-en">🎰 WELCOME TO CASINO ROYALE! 🎰
-
-The best free casino with multiple gambling games!
-
-🎮 9 EXCITING GAMES:
-• 🎰 Fruit Slots - classic slots with jackpot
-• 🎡 Roulette - European roulette, red/black
-• 🃏 Cards - guess the card, double your win
-• 🎲 Dice - roll the dice, place bets
-• 💣 Mines - minesweeper with betting
-• 🎯 Wheel of Fortune - spin and win
-• 🃏 Blackjack - 21, beat the dealer
-• 🂡 Poker - video poker, collect combinations
-
-✨ FEATURES:
-💰 Progressive jackpot
-🎁 Ad rewards
-💳 Credit system
-📱 Adaptive design
-💾 Cloud saves
-
-⚠️ 18+ Adults only.
-No real money gambling.</div>
-        </div>
-        
-        <div class="text-section">
-            <h2 data-ru="🏷️ Теги (Keywords)" data-en="🏷️ Tags (Keywords)">🏷️ Теги (Keywords)</h2>
-            <div class="tags">
-                <span class="tag">casino</span>
-                <span class="tag">slots</span>
-                <span class="tag">roulette</span>
-                <span class="tag">poker</span>
-                <span class="tag">blackjack</span>
-                <span class="tag">dice</span>
-                <span class="tag">gambling</span>
-                <span class="tag">free games</span>
-                <span class="tag">mobile games</span>
-                <span class="tag">jackpot</span>
-                <span class="tag">казино</span>
-                <span class="tag">слоты</span>
-                <span class="tag">рулетка</span>
-                <span class="tag">покер</span>
-                <span class="tag">азартные игры</span>
-            </div>
-        </div>
-    </div>
-    
     <script>
         let currentLang = 'ru';
-        
+
         function setLang(lang) {
             currentLang = lang;
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
-            
+
             document.querySelectorAll('[data-ru]').forEach(el => {
                 el.textContent = el.getAttribute(`data-${lang}`);
             });
         }
-        
-        // Draw standard icon
+
+        // Game definitions with icons and animations
+        const games = [
+            { id: 'slots', name: 'Слоты', nameEn: 'Slots', emoji: '🎰', color1: '#e74c3c', color2: '#c0392b', animation: 'anim-bounce' },
+            { id: 'roulette', name: 'Рулетка', nameEn: 'Roulette', emoji: '🎡', color1: '#27ae60', color2: '#1e8449', animation: 'anim-spin' },
+            { id: 'cards', name: 'Карточки', nameEn: 'Cards', emoji: '🃏', color1: '#3498db', color2: '#2980b9', animation: 'anim-pulse' },
+            { id: 'dice', name: 'Кости', nameEn: 'Dice', emoji: '🎲', color1: '#9b59b6', color2: '#8e44ad', animation: 'anim-shake' },
+            { id: 'mines', name: 'Мины', nameEn: 'Mines', emoji: '💣', color1: '#e67e22', color2: '#d35400', animation: 'anim-pulse' },
+            { id: 'wheel', name: 'Колесо', nameEn: 'Wheel', emoji: '🎯', color1: '#1abc9c', color2: '#16a085', animation: 'anim-spin' },
+            { id: 'blackjack', name: 'Блэкджек', nameEn: 'Blackjack', emoji: '🂡', color1: '#2c3e50', color2: '#1a252f', animation: 'anim-glow' },
+            { id: 'poker', name: 'Покер', nameEn: 'Poker', emoji: '♠️', color1: '#8e44ad', color2: '#6c3483', animation: 'anim-bounce' },
+        ];
+
+        // Draw standard app icon - RECTANGULAR (no rounded corners)
         function drawStandardIcon(canvas, size) {
             const ctx = canvas.getContext('2d');
             const centerX = size / 2;
             const centerY = size / 2;
-            
+
             ctx.clearRect(0, 0, size, size);
-            
+
+            // Gradient background - FULL RECTANGLE
             const gradient = ctx.createLinearGradient(0, 0, size, size);
             gradient.addColorStop(0, '#ffd700');
             gradient.addColorStop(0.5, '#ff6b6b');
             gradient.addColorStop(1, '#ee5a5a');
-            
-            const radius = size * 0.2;
+
             ctx.fillStyle = gradient;
-            ctx.beginPath();
-            ctx.roundRect(0, 0, size, size, radius);
-            ctx.fill();
-            
+            ctx.fillRect(0, 0, size, size);
+
+            // Subtle border
             ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
             ctx.lineWidth = size * 0.02;
-            ctx.beginPath();
-            ctx.roundRect(size * 0.05, size * 0.05, size * 0.9, size * 0.9, radius * 0.9);
-            ctx.stroke();
-            
+            ctx.strokeRect(size * 0.02, size * 0.02, size * 0.96, size * 0.96);
+
+            // Center circle
             const chipRadius = size * 0.35;
             ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
             ctx.beginPath();
             ctx.arc(centerX, centerY, chipRadius, 0, Math.PI * 2);
             ctx.fill();
-            
+
+            // Decorative ring
             ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
             ctx.lineWidth = size * 0.015;
             ctx.setLineDash([size * 0.03, size * 0.02]);
@@ -649,56 +500,57 @@ No real money gambling.</div>
             ctx.arc(centerX, centerY, chipRadius - size * 0.05, 0, Math.PI * 2);
             ctx.stroke();
             ctx.setLineDash([]);
-            
+
+            // Emoji
             ctx.fillStyle = '#ffffff';
             ctx.font = `${size * 0.55}px 'Segoe UI Emoji', 'Apple Color Emoji', sans-serif`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            
+
             ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
             ctx.shadowBlur = size * 0.15;
             ctx.shadowOffsetX = size * 0.05;
             ctx.shadowOffsetY = size * 0.05;
-            
+
             ctx.fillText('🎰', centerX, centerY + size * 0.02);
-            
+
             ctx.shadowColor = 'transparent';
             ctx.shadowBlur = 0;
-            
+
+            // Sparkles
             drawSparkle(ctx, size * 0.15, size * 0.15, size * 0.08);
             drawSparkle(ctx, size * 0.85, size * 0.2, size * 0.06);
         }
-        
-        // Draw TRUE maskable icon with 50% safe zone
+
+        // Draw maskable icon
         function drawMaskableIcon(canvas, size) {
             const ctx = canvas.getContext('2d');
             const centerX = size / 2;
             const centerY = size / 2;
-            const safeZone = size * 0.5; // 50% safe zone = content in center 50%
-            
+
             ctx.clearRect(0, 0, size, size);
-            
-            // Full bleed background (extends to all edges)
+
+            // Full bleed background
             const gradient = ctx.createLinearGradient(0, 0, size, size);
             gradient.addColorStop(0, '#ffd700');
             gradient.addColorStop(0.5, '#ff6b6b');
             gradient.addColorStop(1, '#ee5a5a');
-            
+
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, size, size);
-            
-            // Subtle border
+
+            // Border
             ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
             ctx.lineWidth = size * 0.03;
             ctx.strokeRect(size * 0.02, size * 0.02, size * 0.96, size * 0.96);
-            
-            // Large background circle (fills safe zone)
+
+            // Background circle
             const bgRadius = size * 0.45;
             ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
             ctx.beginPath();
             ctx.arc(centerX, centerY, bgRadius, 0, Math.PI * 2);
             ctx.fill();
-            
+
             // Decorative ring
             ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
             ctx.lineWidth = size * 0.02;
@@ -707,30 +559,127 @@ No real money gambling.</div>
             ctx.arc(centerX, centerY, bgRadius - size * 0.08, 0, Math.PI * 2);
             ctx.stroke();
             ctx.setLineDash([]);
-            
-            // Emoji - SCALED TO FIT SAFE ZONE (50% of canvas)
+
+            // Emoji
             ctx.fillStyle = '#ffffff';
             ctx.font = `${size * 0.4}px 'Segoe UI Emoji', 'Apple Color Emoji', sans-serif`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            
+
             ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
             ctx.shadowBlur = size * 0.2;
             ctx.shadowOffsetX = size * 0.05;
             ctx.shadowOffsetY = size * 0.05;
-            
+
             ctx.fillText('🎰', centerX, centerY);
-            
+
             ctx.shadowColor = 'transparent';
             ctx.shadowBlur = 0;
-            
-            // Extra sparkles in corners (outside safe zone, will be visible on some devices)
+
+            // Sparkles
             drawSparkle(ctx, size * 0.15, size * 0.15, size * 0.07);
             drawSparkle(ctx, size * 0.85, size * 0.15, size * 0.07);
-            drawSparkle(ctx, size * 0.15, size * 0.85, size * 0.06);
-            drawSparkle(ctx, size * 0.85, size * 0.85, size * 0.06);
         }
-        
+
+        // Draw GAME icon - unique per game WITH ANIMATION FRAME
+        function drawGameIcon(canvas, size, game, animationProgress = 0) {
+            const ctx = canvas.getContext('2d');
+            const centerX = size / 2;
+            const centerY = size / 2;
+
+            ctx.clearRect(0, 0, size, size);
+
+            // Game-specific gradient
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, game.color1);
+            gradient.addColorStop(1, game.color2);
+
+            // Sharp rectangle
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, size, size);
+
+            // Subtle border
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.lineWidth = size * 0.02;
+            ctx.strokeRect(size * 0.02, size * 0.02, size * 0.96, size * 0.96);
+
+            // Animated inner circle
+            const circleRadius = size * 0.3 + Math.sin(animationProgress * Math.PI * 2) * size * 0.02;
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, circleRadius, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Decorative ring
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+            ctx.lineWidth = size * 0.015;
+            ctx.setLineDash([size * 0.03, size * 0.02]);
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, circleRadius - size * 0.05, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Game emoji with animation
+            let emojiX = centerX;
+            let emojiY = centerY;
+            let emojiSize = size * 0.45;
+            let rotation = 0;
+            let scaleX = 1;
+            let scaleY = 1;
+
+            // Apply different animations based on game type
+            switch(game.animation) {
+                case 'anim-bounce':
+                    emojiY = centerY - Math.abs(Math.sin(animationProgress * Math.PI * 2)) * size * 0.1;
+                    emojiSize = size * 0.45 + Math.sin(animationProgress * Math.PI * 2) * size * 0.05;
+                    break;
+                case 'anim-spin':
+                    rotation = animationProgress * Math.PI * 2;
+                    break;
+                case 'anim-pulse':
+                    const pulseScale = 1 + Math.sin(animationProgress * Math.PI * 2) * 0.2;
+                    emojiSize = size * 0.45 * pulseScale;
+                    break;
+                case 'anim-shake':
+                    emojiX = centerX + Math.sin(animationProgress * Math.PI * 4) * size * 0.03;
+                    rotation = Math.sin(animationProgress * Math.PI * 4) * 0.2;
+                    break;
+                case 'anim-glow':
+                    const glowIntensity = 0.5 + Math.sin(animationProgress * Math.PI * 2) * 0.5;
+                    ctx.shadowBlur = size * 0.15 + glowIntensity * size * 0.15;
+                    break;
+            }
+
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate(rotation);
+            ctx.scale(scaleX, scaleY);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = `${emojiSize}px 'Segoe UI Emoji', 'Apple Color Emoji', sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+            if (game.animation !== 'anim-glow') {
+                ctx.shadowBlur = size * 0.15;
+            }
+            ctx.shadowOffsetX = size * 0.05;
+            ctx.shadowOffsetY = size * 0.05;
+
+            ctx.fillText(game.emoji, emojiX - centerX, emojiY - centerY);
+
+            ctx.restore();
+
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+
+            // Animated sparkles
+            const sparkleIntensity = 0.5 + Math.sin(animationProgress * Math.PI * 4) * 0.5;
+            drawSparkle(ctx, size * 0.2, size * 0.15, size * 0.06 * sparkleIntensity);
+            drawSparkle(ctx, size * 0.8, size * 0.2, size * 0.05 * sparkleIntensity);
+        }
+
         function drawSparkle(ctx, x, y, size) {
             ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
             ctx.beginPath();
@@ -743,11 +692,66 @@ No real money gambling.</div>
             ctx.lineCap = 'round';
             ctx.stroke();
         }
-        
+
+        // Generate game icon cards
+        function generateGameIcons() {
+            const grid = document.getElementById('game-icons-grid');
+            grid.innerHTML = '';
+
+            games.forEach((game, index) => {
+                const card = document.createElement('div');
+                card.className = 'game-icon-card';
+
+                const canvasId = `game-canvas-${game.id}`;
+                const gameName = currentLang === 'ru' ? game.name : game.nameEn;
+
+                card.innerHTML = `
+                    <div class="emoji-preview ${game.animation}">${game.emoji}</div>
+                    <canvas id="${canvasId}" width="256" height="256"></canvas>
+                    <h4>${gameName}</h4>
+                    <p style="color: #aaa; font-size: 0.85em;">256×256 PNG • Анимация в реальном времени</p>
+                    <button class="download-btn btn-192" style="margin-top: 15px; font-size: 0.9em; padding: 10px 20px;" 
+                            onclick="downloadGameIcon('${game.id}')">
+                        📥 Скачать
+                    </button>
+                `;
+
+                grid.appendChild(card);
+            });
+
+            // Start animation loop for all game icons
+            startGameIconAnimations();
+        }
+
+        // Animation loop for game icons
+        let animationFrameIds = {};
+        function startGameIconAnimations() {
+            games.forEach(game => {
+                const canvas = document.getElementById(`game-canvas-${game.id}`);
+                if (canvas) {
+                    let startTime = performance.now();
+                    const animate = (currentTime) => {
+                        const progress = ((currentTime - startTime) % 2000) / 2000; // 2 second cycle
+                        drawGameIcon(canvas, 256, game, progress);
+                        animationFrameIds[game.id] = requestAnimationFrame(animate);
+                    };
+                    animationFrameIds[game.id] = requestAnimationFrame(animate);
+                }
+            });
+        }
+
+        // Stop all animations
+        function stopGameIconAnimations() {
+            Object.values(animationFrameIds).forEach(id => {
+                if (id) cancelAnimationFrame(id);
+            });
+            animationFrameIds = {};
+        }
+
         function downloadIcon(size, maskable) {
             const canvasId = maskable ? `canvas-maskable-${size}` : `canvas-${size}`;
             const canvas = document.getElementById(canvasId);
-            
+
             canvas.toBlob(function(blob) {
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
@@ -760,48 +764,134 @@ No real money gambling.</div>
                 URL.revokeObjectURL(url);
             }, 'image/png');
         }
-        
+
+        function downloadGameIcon(gameId) {
+            const canvas = document.getElementById(`game-canvas-${gameId}`);
+            if (!canvas) return;
+
+            // Stop animation for this game to get clean frame
+            if (animationFrameIds[gameId]) {
+                cancelAnimationFrame(animationFrameIds[gameId]);
+                delete animationFrameIds[gameId];
+            }
+
+            // Draw final frame
+            const game = games.find(g => g.id === gameId);
+            drawGameIcon(canvas, 256, game, 0);
+
+            canvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `icon-${gameId}-256.png`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                showNotification(`✅ ${game.emoji} ${currentLang === 'ru' ? game.name : game.nameEn} — сохранено!`, 'win');
+
+                // Restart animation after download
+                setTimeout(() => {
+                    const restartCanvas = document.getElementById(`game-canvas-${gameId}`);
+                    if (restartCanvas && !animationFrameIds[gameId]) {
+                        let startTime = performance.now();
+                        const animate = (currentTime) => {
+                            const progress = ((currentTime - startTime) % 2000) / 2000;
+                            drawGameIcon(restartCanvas, 256, game, progress);
+                            animationFrameIds[gameId] = requestAnimationFrame(animate);
+                        };
+                        animationFrameIds[gameId] = requestAnimationFrame(animate);
+                    }
+                }, 500);
+            }, 'image/png');
+        }
+
+        function downloadAllGameIcons() {
+            showNotification(`📦 Скачивание ${games.length} иконок...`, 'info', 3000);
+
+            // Stop all animations first
+            stopGameIconAnimations();
+
+            games.forEach((game, index) => {
+                setTimeout(() => {
+                    const canvas = document.getElementById(`game-canvas-${game.id}`);
+                    if (canvas) {
+                        // Draw clean frame
+                        drawGameIcon(canvas, 256, game, 0);
+
+                        canvas.toBlob(function(blob) {
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = `icon-${game.id}-256.png`;
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(url);
+                        }, 'image/png');
+                    }
+                }, index * 300);
+            });
+
+            // Restart animations after all downloads
+            setTimeout(() => {
+                startGameIconAnimations();
+            }, games.length * 300 + 500);
+        }
+
         function downloadAll() {
             downloadIcon(192, false);
             setTimeout(() => downloadIcon(512, false), 200);
             setTimeout(() => downloadIcon(192, true), 400);
             setTimeout(() => downloadIcon(512, true), 600);
         }
-        
-        function copyText(elementId) {
-            const text = document.getElementById(elementId).textContent;
-            navigator.clipboard.writeText(text).then(() => {
-                alert(currentLang === 'ru' ? '✅ Скопировано!' : '✅ Copied!');
-            }).catch(() => {
-                const textarea = document.createElement('textarea');
-                textarea.value = text;
-                document.body.appendChild(textarea);
-                textarea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textarea);
-                alert(currentLang === 'ru' ? '✅ Скопировано!' : '✅ Copied!');
-            });
+
+        function showNotification(text, type = 'info', duration = 3000) {
+            const existing = document.querySelector('.gen-notification');
+            if (existing) existing.remove();
+
+            const notif = document.createElement('div');
+            notif.className = 'gen-notification';
+            notif.textContent = text;
+            notif.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 15px 30px;
+                border-radius: 15px;
+                font-size: 1.1em;
+                font-weight: bold;
+                z-index: 10000;
+                animation: genNotifIn 0.3s ease;
+                max-width: 90%;
+                text-align: center;
+                box-shadow: 0 5px 30px rgba(0,0,0,0.5);
+            `;
+
+            if (type === 'win') {
+                notif.style.background = 'linear-gradient(45deg, #00b894, #00a085)';
+                notif.style.color = '#fff';
+            } else {
+                notif.style.background = 'linear-gradient(45deg, #3498db, #2980b9)';
+                notif.style.color = '#fff';
+            }
+
+            document.body.appendChild(notif);
+
+            setTimeout(() => {
+                notif.style.animation = 'genNotifOut 0.3s ease';
+                setTimeout(() => notif.remove(), 300);
+            }, duration);
         }
-        
-        if (!CanvasRenderingContext2D.prototype.roundRect) {
-            CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
-                if (w < 2 * r) r = w / 2;
-                if (h < 2 * r) r = h / 2;
-                this.moveTo(x + r, y);
-                this.arcTo(x + w, y, x + w, y + h, r);
-                this.arcTo(x + w, y + h, x, y + h, r);
-                this.arcTo(x, y + h, x, y, r);
-                this.arcTo(x, y, x + w, y, r);
-                this.closePath();
-                return this;
-            };
-        }
-        
+
         window.addEventListener('DOMContentLoaded', () => {
             drawStandardIcon(document.getElementById('canvas-192'), 192);
             drawStandardIcon(document.getElementById('canvas-512'), 512);
             drawMaskableIcon(document.getElementById('canvas-maskable-192'), 192);
             drawMaskableIcon(document.getElementById('canvas-maskable-512'), 512);
+            generateGameIcons();
         });
     </script>
 </body>
