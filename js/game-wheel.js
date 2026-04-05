@@ -35,8 +35,7 @@ function spinWheel() {
 
         if (multiplier > 0) {
             const winAmount = bets.wheel * multiplier;
-            const itemName = `🎯 Колесо (x${multiplier})`;
-            addToBalance(winAmount, itemName);
+            addToBalance(winAmount);
             lastWin = winAmount;
             showMessage('wheel', `🎉 ВЫПАЛО x${multiplier}! ПОБЕДА ${winAmount}! 🎉`, 'win');
         } else {

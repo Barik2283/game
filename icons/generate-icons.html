@@ -102,7 +102,7 @@
         .icon-preview {
             border-radius: 0;
             box-shadow: 0 20px 60px rgba(255, 215, 0, 0.4);
-            border: 4px solid rgba(255, 255, 255, 0.2);
+            border: none;
             background: #fff;
         }
 
@@ -325,8 +325,8 @@
     <p class="subtitle" data-ru="Генератор иконок для игр — Яндекс Игры" data-en="Game Icons Generator — Yandex Games">Генератор иконок для игр — Яндекс Игры</p>
 
     <div class="lang-switch">
-        <button class="lang-btn active" onclick="setLang('ru')">🇷🇺 Русский</button>
-        <button class="lang-btn" onclick="setLang('en')">🇬🇧 English</button>
+        <button class="lang-btn active" onclick="setIconLang('ru')">🇷🇺 Русский</button>
+        <button class="lang-btn" onclick="setIconLang('en')">🇬🇧 English</button>
     </div>
 
     <!-- GAME ICONS WITH ANIMATIONS -->
@@ -343,7 +343,8 @@
         </div>
 
         <div class="buttons">
-            <button class="download-btn btn-all" onclick="downloadAllGameIcons()">📦 <span data-ru="Скачать все иконки игр" data-en="Download All Game Icons">Скачать все иконки игр</span></button>
+            <button class="download-btn btn-all" onclick="downloadAllGameIcons()">📦 <span data-ru="Скачать иконки (текущий язык)" data-en="Download Icons (current lang)">Скачать иконки (текущий язык)</span></button>
+            <button class="download-btn btn-all" onclick="downloadAllIconsBothLangs()">📦 <span data-ru="Скачать ВСЕ (RU + EN)" data-en="Download ALL (RU + EN)">Скачать ВСЕ (RU + EN)</span></button>
         </div>
     </div>
 
@@ -440,6 +441,7 @@
 
     <script>
         let currentLang = 'ru';
+        let iconLang = 'ru'; // Separate language for icons
 
         function setLang(lang) {
             currentLang = lang;
@@ -449,6 +451,26 @@
             document.querySelectorAll('[data-ru]').forEach(el => {
                 el.textContent = el.getAttribute(`data-${lang}`);
             });
+        }
+
+        function setIconLang(lang) {
+            iconLang = lang;
+            // Update lang buttons in icons section
+            document.querySelectorAll('.lang-switch .lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if ((lang === 'ru' && btn.textContent.includes('Русский')) || 
+                    (lang === 'en' && btn.textContent.includes('English'))) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Translate all text elements with data-ru/data-en
+            document.querySelectorAll('[data-ru]').forEach(el => {
+                el.textContent = el.getAttribute(`data-${lang}`);
+            });
+
+            // Regenerate game icons with new language
+            generateGameIcons();
         }
 
         // Game definitions with icons and animations
@@ -463,7 +485,11 @@
             { id: 'poker', name: 'Покер', nameEn: 'Poker', emoji: '♠️', color1: '#8e44ad', color2: '#6c3483', animation: 'anim-bounce' },
         ];
 
-        // Draw standard app icon - RECTANGULAR (no rounded corners)
+        function getGameName(game) {
+            return iconLang === 'ru' ? game.name : game.nameEn;
+        }
+
+        // Draw standard app icon - RECTANGULAR (no rounded corners, NO border)
         function drawStandardIcon(canvas, size) {
             const ctx = canvas.getContext('2d');
             const centerX = size / 2;
@@ -480,10 +506,7 @@
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, size, size);
 
-            // Subtle border
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
-            ctx.lineWidth = size * 0.02;
-            ctx.strokeRect(size * 0.02, size * 0.02, size * 0.96, size * 0.96);
+            // NO border - Yandex Games requirement (п. 8.3.3)
 
             // Center circle
             const chipRadius = size * 0.35;
@@ -522,7 +545,7 @@
             drawSparkle(ctx, size * 0.85, size * 0.2, size * 0.06);
         }
 
-        // Draw maskable icon
+        // Draw maskable icon - NO border, NO rounded corners
         function drawMaskableIcon(canvas, size) {
             const ctx = canvas.getContext('2d');
             const centerX = size / 2;
@@ -530,7 +553,7 @@
 
             ctx.clearRect(0, 0, size, size);
 
-            // Full bleed background
+            // Full bleed background - RECTANGLE, no rounded corners
             const gradient = ctx.createLinearGradient(0, 0, size, size);
             gradient.addColorStop(0, '#ffd700');
             gradient.addColorStop(0.5, '#ff6b6b');
@@ -539,10 +562,7 @@
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, size, size);
 
-            // Border
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-            ctx.lineWidth = size * 0.03;
-            ctx.strokeRect(size * 0.02, size * 0.02, size * 0.96, size * 0.96);
+            // NO border - Yandex Games requirement
 
             // Background circle
             const bgRadius = size * 0.45;
@@ -598,12 +618,9 @@
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, size, size);
 
-            // Subtle border
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
-            ctx.lineWidth = size * 0.02;
-            ctx.strokeRect(size * 0.02, size * 0.02, size * 0.96, size * 0.96);
+            // NO border - Yandex Games requirement (п. 8.3.3)
 
-            // Animated inner circle
+            // Inner circle
             const circleRadius = size * 0.3 + Math.sin(animationProgress * Math.PI * 2) * size * 0.02;
             ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
             ctx.beginPath();
@@ -703,16 +720,16 @@
                 card.className = 'game-icon-card';
 
                 const canvasId = `game-canvas-${game.id}`;
-                const gameName = currentLang === 'ru' ? game.name : game.nameEn;
+                const gameName = getGameName(game);
 
                 card.innerHTML = `
                     <div class="emoji-preview ${game.animation}">${game.emoji}</div>
                     <canvas id="${canvasId}" width="256" height="256"></canvas>
                     <h4>${gameName}</h4>
-                    <p style="color: #aaa; font-size: 0.85em;">256×256 PNG • Анимация в реальном времени</p>
+                    <p style="color: #aaa; font-size: 0.85em;">256×256 PNG • ${iconLang === 'ru' ? 'Анимация в реальном времени' : 'Real-time animation'}</p>
                     <button class="download-btn btn-192" style="margin-top: 15px; font-size: 0.9em; padding: 10px 20px;" 
                             onclick="downloadGameIcon('${game.id}')">
-                        📥 Скачать
+                        📥 ${iconLang === 'ru' ? 'Скачать' : 'Download'}
                     </button>
                 `;
 
@@ -783,13 +800,14 @@
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `icon-${gameId}-256.png`;
+                const langPrefix = iconLang === 'ru' ? 'ru' : 'en';
+                a.download = `icon-${langPrefix}-${gameId}-256.png`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
 
-                showNotification(`✅ ${game.emoji} ${currentLang === 'ru' ? game.name : game.nameEn} — сохранено!`, 'win');
+                showNotification(`✅ ${game.emoji} ${getGameName(game)} — ${iconLang === 'ru' ? 'сохранено!' : 'saved!'}`, 'win');
 
                 // Restart animation after download
                 setTimeout(() => {
@@ -808,7 +826,7 @@
         }
 
         function downloadAllGameIcons() {
-            showNotification(`📦 Скачивание ${games.length} иконок...`, 'info', 3000);
+            showNotification(`${iconLang === 'ru' ? '📦 Скачивание' : '📦 Downloading'} ${games.length} ${iconLang === 'ru' ? 'иконок...' : 'icons...'}`, 'info', 3000);
 
             // Stop all animations first
             stopGameIconAnimations();
@@ -824,7 +842,8 @@
                             const url = URL.createObjectURL(blob);
                             const a = document.createElement('a');
                             a.href = url;
-                            a.download = `icon-${game.id}-256.png`;
+                            const langPrefix = iconLang === 'ru' ? 'ru' : 'en';
+                            a.download = `icon-${langPrefix}-${game.id}-256.png`;
                             document.body.appendChild(a);
                             a.click();
                             document.body.removeChild(a);
@@ -838,6 +857,56 @@
             setTimeout(() => {
                 startGameIconAnimations();
             }, games.length * 300 + 500);
+        }
+
+        function downloadAllIconsBothLangs() {
+            showNotification(iconLang === 'ru' ? '📦 Скачивание 16 иконок (RU + EN)...' : '📦 Downloading 16 icons (RU + EN)...', 'info', 3000);
+
+            // Stop all animations
+            stopGameIconAnimations();
+
+            let downloadIndex = 0;
+            const totalDownloads = games.length * 2; // RU + EN
+
+            function downloadNext() {
+                if (downloadIndex >= totalDownloads) {
+                    // All done, restart animations
+                    setTimeout(() => startGameIconAnimations(), 500);
+                    return;
+                }
+
+                const lang = downloadIndex < games.length ? 'ru' : 'en';
+                const gameIndex = downloadIndex % games.length;
+                const game = games[gameIndex];
+
+                const canvas = document.getElementById(`game-canvas-${game.id}`);
+                if (canvas) {
+                    // Temporarily switch lang for name
+                    const origLang = iconLang;
+                    iconLang = lang;
+
+                    // Draw clean frame
+                    drawGameIcon(canvas, 256, game, 0);
+
+                    canvas.toBlob(function(blob) {
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `icon-${lang}-${game.id}-256.png`;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+
+                        iconLang = origLang;
+                    }, 'image/png');
+                }
+
+                downloadIndex++;
+                setTimeout(downloadNext, 300);
+            }
+
+            downloadNext();
         }
 
         function downloadAll() {

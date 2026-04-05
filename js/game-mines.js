@@ -70,7 +70,7 @@ function revealMine(index) {
         minesActive = false;
         document.getElementById('cashout-btn').style.display = 'none';
         showMessage('mines', '💣 БУМ! Проиграл!', 'lose');
-        
+
         cells.forEach((c, i) => {
             if (minesGrid[i] === 'mine') {
                 c.textContent = '💣';
@@ -83,7 +83,7 @@ function revealMine(index) {
         cell.textContent = '💎';
         cell.style.background = '#00b894';
         minesRevealed++;
-        
+
         const currentWin = Math.floor(bets.mines * (1 + minesRevealed * 0.5));
         showMessage('mines', `Можно забрать: ${currentWin}`, 'win');
     }
@@ -93,8 +93,7 @@ function cashoutMines() {
     if (!minesActive) return;
 
     const winAmount = Math.floor(bets.mines * (1 + minesRevealed * 0.5));
-    const itemName = `💣 Мины (${minesRevealed} камней)`;
-    addToBalance(winAmount, itemName);
+    addToBalance(winAmount);
     lastWin = winAmount;
     minesActive = false;
     document.getElementById('cashout-btn').style.display = 'none';

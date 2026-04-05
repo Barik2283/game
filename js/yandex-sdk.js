@@ -50,14 +50,6 @@ function initYandexSDK() {
             .then(ysdkInstance => {
                 ysdk = ysdkInstance;
 
-                // Auto-detect language
-                try {
-                    currentLang = ysdk.environment.i18n.lang || 'ru';
-                    document.documentElement.lang = currentLang;
-                } catch (e) {
-                    // Ignore environment errors in local testing
-                }
-
                 // Initialize player for saves
                 return ysdk.getPlayer();
             })

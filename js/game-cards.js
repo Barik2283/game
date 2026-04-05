@@ -57,8 +57,7 @@ function playCards() {
     setTimeout(() => {
         if (cards[selectedCardIndex].color === selectedCardColor) {
             const winAmount = bets.cards * 2;
-            const itemName = `🃏 Карта (${selectedCardColor})`;
-            addToBalance(winAmount, itemName);
+            addToBalance(winAmount);
             lastWin = winAmount;
             showMessage('cards', `🎉 УГАДАЛ! ${winAmount}! 🎉`, 'win');
         } else {

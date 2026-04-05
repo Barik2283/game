@@ -65,17 +65,17 @@ function dealPoker() {
     const deck = createPokerDeck();
     pokerHand = [];
     pokerHeld = [false, false, false, false, false];
-    
+
     for (let i = 0; i < 5; i++) {
         pokerHand.push(deck.pop());
     }
-    
+
     pokerPhase = 'draw';
     renderPokerHand();
-    
+
     document.getElementById('hold-btn').disabled = false;
     document.getElementById('draw-btn').disabled = false;
-    
+
     showMessage('poker', 'Выберите карты для замены', 'win');
 }
 
@@ -159,13 +159,12 @@ function evaluatePokerHand() {
     
     if (multiplier > 0) {
         const winAmount = bets.poker * multiplier;
-        const itemName = `🂡 Покер (${handName})`;
-        addToBalance(winAmount, itemName);
+        addToBalance(winAmount);
         lastWin = winAmount;
         showMessage('poker', `🎉 ${handName} ПОБЕДА ${winAmount}! 🎉`, 'win');
     } else {
         showMessage('poker', 'Нет комбинации. Попробуй ещё!', 'lose');
     }
-    
+
     updateStats();
 }

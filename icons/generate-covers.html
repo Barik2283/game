@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cover Generator - Casino Royale</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0c0c0c 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            color: #fff;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ffd700, #ff6b6b, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #aaa;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .section {
+            width: 100%;
+            max-width: 1200px;
+            margin: 40px 0;
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            color: #ffd700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .info-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 20px;
+            padding: 25px;
+            max-width: 800px;
+            margin: 30px auto;
+        }
+
+        .info-box h3 {
+            color: #ffd700;
+            margin-bottom: 15px;
+        }
+
+        .info-box p, .info-box li {
+            color: #ccc;
+            line-height: 1.6;
+            margin: 10px 0;
+        }
+
+        .info-box ol, .info-box ul {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        .highlight {
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        /* Cover previews */
+        .cover-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+            margin: 40px 0;
+            justify-items: center;
+        }
+
+        .cover-card {
+            text-align: center;
+        }
+
+        .cover-preview {
+            border-radius: 0;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: none;
+            background: #fff;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .cover-label {
+            margin-top: 15px;
+            font-size: 1.2em;
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .cover-size {
+            font-size: 0.9em;
+            color: #aaa;
+            margin-top: 5px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .download-btn {
+            padding: 14px 28px;
+            font-size: 1em;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #ffd700, #ffaa00);
+            color: #1a1a2e;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a5a);
+            color: white;
+        }
+
+        .btn-all {
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+            color: white;
+        }
+
+        .cover-lang-btn {
+            padding: 10px 25px;
+            border: 2px solid #ffd700;
+            background: transparent;
+            color: #ffd700;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+        }
+
+        .cover-lang-btn:hover {
+            background: rgba(255, 215, 0, 0.2);
+        }
+
+        .cover-lang-btn.active {
+            background: #ffd700;
+            color: #1a1a2e;
+        }
+
+        canvas {
+            display: none;
+        }
+
+        @keyframes notifIn {
+            from { transform: translateX(-50%) translateY(-30px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+
+        @keyframes notifOut {
+            from { transform: translateX(-50%) translateY(0); opacity: 1; }
+            to { transform: translateX(-50%) translateY(-30px); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <h1 data-ru="Casino Royale" data-en="Casino Royale">Casino Royale</h1>
+    <p class="subtitle" data-ru="Генератор обложек для Яндекс.Игр" data-en="Cover Generator for Yandex Games">Генератор обложек для Яндекс.Игр</p>
+
+    <div class="lang-switcher" style="display: flex; gap: 10px; margin-bottom: 30px; justify-content: center;">
+        <button class="cover-lang-btn active" onclick="setCoverLang('ru')" id="cover-lang-ru">🇷🇺 RU</button>
+        <button class="cover-lang-btn" onclick="setCoverLang('en')" id="cover-lang-en">🇬🇧 EN</button>
+    </div>
+
+    <div class="info-box">
+        <h3 data-ru="📋 Требования Яндекс.Игр (п. 8.3.3)" data-en="📋 Yandex Games Requirements (8.3.3)">📋 Требования Яндекс.Игр (п. 8.3.3)</h3>
+        <ul>
+            <li><span class="highlight" data-ru="Без скругленных углов" data-en="No rounded corners">Без скругленных углов</span> — <span data-ru="прямоугольный холст" data-en="rectangular canvas">прямоугольный холст</span></li>
+            <li><span class="highlight" data-ru="Без рамок" data-en="No borders">Без рамок</span> — <span data-ru="никаких границ по краям" data-en="no edge borders">никаких границ по краям</span></li>
+            <li><span class="highlight" data-ru="Без стороннего UI" data-en="No third-party UI">Без стороннего UI</span> — <span data-ru="без шапок, статус-баров" data-en="no headers, status bars">без шапок, статус-баров</span></li>
+            <li><span class="highlight" data-ru="Размер" data-en="Size">Размер</span>: <span data-ru="800×470 (16:9)" data-en="800×470 (16:9)">800×470 (16:9)</span></li>
+        </ul>
+    </div>
+
+    <!-- Cover Previews -->
+    <div class="section">
+        <h2 class="section-title">🖼️ Обложки</h2>
+
+        <div class="cover-grid">
+            <div class="cover-card">
+                <canvas id="canvas-cover1" width="800" height="470" class="cover-preview" style="width: 800px; height: 470px; max-width: 100%;"></canvas>
+                <div class="cover-label" data-ru="Основная обложка" data-en="Main Cover">Основная обложка</div>
+                <div class="cover-size" data-ru="800×470 (16:9)" data-en="800×470 (16:9)">800×470 (16:9)</div>
+                <div class="buttons">
+                    <button class="download-btn btn-primary" onclick="downloadCover('cover1')">📥 <span data-ru="Скачать" data-en="Download">Скачать</span></button>
+                </div>
+            </div>
+
+            <div class="cover-card">
+                <canvas id="canvas-cover2" width="800" height="470" class="cover-preview" style="width: 800px; height: 470px; max-width: 100%;"></canvas>
+                <div class="cover-label" data-ru="Альтернативная обложка" data-en="Alternative Cover">Альтернативная обложка</div>
+                <div class="cover-size" data-ru="800×470 (16:9)" data-en="800×470 (16:9)">800×470 (16:9)</div>
+                <div class="buttons">
+                    <button class="download-btn btn-secondary" onclick="downloadCover('cover2')">📥 <span data-ru="Скачать" data-en="Download">Скачать</span></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button class="download-btn btn-all" onclick="downloadAllCovers()">📦 <span>Скачать обложки (текущий язык)</span></button>
+            <button class="download-btn btn-all" onclick="downloadAllCoversBothLangs()">📦 <span>Скачать ВСЕ (RU + EN)</span></button>
+        </div>
+    </div>
+
+    <script>
+        let coverLang = 'ru';
+
+        const coverTranslations = {
+            ru: {
+                title: 'Casino Royale',
+                subtitle: 'Лучшие азартные игры — Слоты, Рулетка, Покер, Блэкджек',
+                tagline: 'Играй бесплатно • Без реальных денег • 18+'
+            },
+            en: {
+                title: 'Casino Royale',
+                subtitle: 'Best Casino Games — Slots, Roulette, Poker, Blackjack',
+                tagline: 'Play for Free • No Real Money • 18+'
+            }
+        };
+
+        function setCoverLang(lang) {
+            coverLang = lang;
+            document.querySelectorAll('.cover-lang-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`cover-lang-${lang}`).classList.add('active');
+
+            // Translate all text elements with data-ru/data-en
+            document.querySelectorAll('[data-ru]').forEach(el => {
+                el.textContent = el.getAttribute(`data-${lang}`);
+            });
+
+            // Redraw covers
+            drawCover(document.getElementById('canvas-cover1'), 1);
+            drawCover(document.getElementById('canvas-cover2'), 2);
+        }
+
+        // Draw casino cover - no borders, no rounded corners
+        function drawCover(canvas, variant = 1) {
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+
+            ctx.clearRect(0, 0, w, h);
+
+            // Background gradient - full bleed, no borders
+            let gradient;
+            if (variant === 1) {
+                gradient = ctx.createRadialGradient(w * 0.5, h * 0.5, 0, w * 0.5, h * 0.5, w * 0.7);
+                gradient.addColorStop(0, '#2c3e50');
+                gradient.addColorStop(0.5, '#1a1a2e');
+                gradient.addColorStop(1, '#0c0c0c');
+            } else {
+                gradient = ctx.createLinearGradient(0, 0, w, h);
+                gradient.addColorStop(0, '#1a1a2e');
+                gradient.addColorStop(0.5, '#2c3e50');
+                gradient.addColorStop(1, '#1a1a2e');
+            }
+
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, w, h);
+
+            // Decorative circles - no borders
+            for (let i = 0; i < 15; i++) {
+                const x = Math.random() * w;
+                const y = Math.random() * h;
+                const r = Math.random() * 80 + 30;
+                const alpha = Math.random() * 0.1 + 0.05;
+
+                ctx.fillStyle = `rgba(255, 215, 0, ${alpha})`;
+                ctx.beginPath();
+                ctx.arc(x, y, r, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Poker chip patterns
+            drawChip(ctx, w * 0.2, h * 0.5, 150, 'rgba(231, 76, 60, 0.3)');
+            drawChip(ctx, w * 0.8, h * 0.5, 150, 'rgba(52, 152, 219, 0.3)');
+            drawChip(ctx, w * 0.5, h * 0.15, 100, 'rgba(255, 215, 0, 0.2)');
+            drawChip(ctx, w * 0.5, h * 0.85, 100, 'rgba(155, 89, 182, 0.2)');
+
+            // Sparkle decorations
+            drawSparkle(ctx, w * 0.1, h * 0.2, 30);
+            drawSparkle(ctx, w * 0.9, h * 0.3, 25);
+            drawSparkle(ctx, w * 0.15, h * 0.8, 20);
+            drawSparkle(ctx, w * 0.85, h * 0.75, 35);
+            drawSparkle(ctx, w * 0.5, h * 0.1, 15);
+
+            // Title text - Casino Royale
+            const t = coverTranslations[coverLang];
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = `bold ${w * 0.08}px 'Segoe UI', sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            // Text shadow/glow
+            ctx.shadowColor = 'rgba(255, 215, 0, 0.8)';
+            ctx.shadowBlur = 30;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+
+            ctx.fillText(t.title, w * 0.5, h * 0.45);
+
+            // Subtitle
+            ctx.font = `${w * 0.035}px 'Segoe UI', sans-serif`;
+            ctx.shadowBlur = 15;
+            ctx.fillStyle = '#ffd700';
+            ctx.fillText(t.subtitle, w * 0.5, h * 0.58);
+
+            // Game icons row
+            const emojis = ['🎰', '🎡', '🃏', '🎲', '💣', '🎯', '🂡', '♠️'];
+            const emojiSize = w * 0.05;
+            const totalWidth = emojis.length * emojiSize * 1.5;
+            let startX = (w - totalWidth) / 2;
+
+            ctx.font = `${emojiSize}px 'Segoe UI Emoji', 'Apple Color Emoji', sans-serif`;
+            ctx.shadowBlur = 20;
+            ctx.fillStyle = '#ffffff';
+
+            emojis.forEach((emoji, i) => {
+                ctx.fillText(emoji, startX + i * emojiSize * 1.5 + emojiSize / 2, h * 0.75);
+            });
+
+            // Bottom tagline
+            ctx.font = `bold ${w * 0.03}px 'Segoe UI', sans-serif`;
+            ctx.shadowBlur = 10;
+            ctx.fillStyle = '#aaa';
+            ctx.fillText(t.tagline, w * 0.5, h * 0.92);
+
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+        }
+
+        function drawChip(ctx, x, y, radius, color) {
+            // Outer ring
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Inner circle
+            ctx.fillStyle = color.replace(/[\d.]+\)$/, '0.15)');
+            ctx.beginPath();
+            ctx.arc(x, y, radius * 0.7, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Dashed ring
+            ctx.strokeStyle = color.replace(/[\d.]+\)$/, '0.3)');
+            ctx.lineWidth = 3;
+            ctx.setLineDash([10, 8]);
+            ctx.beginPath();
+            ctx.arc(x, y, radius * 0.85, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+
+        function drawSparkle(ctx, x, y, size) {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+            ctx.beginPath();
+            ctx.moveTo(x - size, y);
+            ctx.lineTo(x + size, y);
+            ctx.moveTo(x, y - size);
+            ctx.lineTo(x, y + size);
+            ctx.strokeStyle = 'rgba(255, 215, 0, 0.4)';
+            ctx.lineWidth = size * 0.15;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+        }
+
+        function downloadCover(name) {
+            const canvas = document.getElementById(`canvas-${name}`);
+            if (!canvas) return;
+
+            canvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `cover-${coverLang}-${name}-800x470.png`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                showNotification(`✅ ${coverLang.toUpperCase()} ${name} — ${coverLang === 'ru' ? 'сохранено!' : 'saved!'}`, 'win');
+            }, 'image/png');
+        }
+
+        function downloadAllCovers() {
+            downloadCover('cover1');
+            setTimeout(() => downloadCover('cover2'), 500);
+            showNotification(`${coverLang === 'ru' ? '📦 Скачивание обложек...' : '📦 Downloading covers...'}`, 'info', 3000);
+        }
+
+        function downloadAllCoversBothLangs() {
+            showNotification(coverLang === 'ru' ? '📦 Скачивание 4 обложек (RU + EN)...' : '📦 Downloading 4 covers (RU + EN)...', 'info', 3000);
+
+            const langs = ['ru', 'en'];
+            const covers = ['cover1', 'cover2'];
+            let index = 0;
+
+            function downloadNext() {
+                if (index >= langs.length * covers.length) return;
+
+                const lang = langs[Math.floor(index / covers.length)];
+                const cover = covers[index % covers.length];
+
+                // Temporarily set lang for drawing
+                const origLang = coverLang;
+                coverLang = lang;
+                drawCover(document.getElementById(`canvas-${cover}`), cover === 'cover1' ? 1 : 2);
+
+                const canvas = document.getElementById(`canvas-${cover}`);
+                canvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `cover-${lang}-${cover}-800x470.png`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+
+                    coverLang = origLang;
+                }, 'image/png');
+
+                index++;
+                setTimeout(downloadNext, 500);
+            }
+
+            downloadNext();
+        }
+
+        function showNotification(text, type = 'info', duration = 3000) {
+            const existing = document.querySelector('.gen-notification');
+            if (existing) existing.remove();
+
+            const notif = document.createElement('div');
+            notif.textContent = text;
+            notif.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 15px 30px;
+                border-radius: 15px;
+                font-size: 1.1em;
+                font-weight: bold;
+                z-index: 10000;
+                animation: notifIn 0.3s ease;
+                max-width: 90%;
+                text-align: center;
+                box-shadow: 0 5px 30px rgba(0,0,0,0.5);
+                background: ${type === 'win' ? 'linear-gradient(45deg, #00b894, #00a085)' : 'linear-gradient(45deg, #3498db, #2980b9)'};
+                color: #fff;
+            `;
+
+            document.body.appendChild(notif);
+
+            setTimeout(() => {
+                notif.style.animation = 'notifOut 0.3s ease';
+                setTimeout(() => notif.remove(), 300);
+            }, duration);
+        }
+
+        // Generate on load
+        window.addEventListener('DOMContentLoaded', () => {
+            drawCover(document.getElementById('canvas-cover1'), 1);
+            drawCover(document.getElementById('canvas-cover2'), 2);
+        });
+    </script>
+</body>
+</html>

@@ -68,14 +68,11 @@ function checkSlotsWin(results, betAmount) {
         });
 
         let winAmount = 0;
-        let itemName = '';
 
-        // Apply organ win bonus
         const winBonus = getWinBonus();
 
         if (slotMultipliers[bestSymbol] === 'jackpot') {
             winAmount = jackpot;
-            itemName = `🎉 ДЖЕКПОТ (${bestSymbol})`;
             jackpot = 50000;
             showMessage('slots', `🎉🎉🎉 ДЖЕКПОТ! +${winAmount} монет! 🎉🎉🎉`, 'win');
             showNotification(`🎉 ДЖЕКПОТ! +${winAmount} монет! 🎉`, 'win', 6000);
@@ -84,12 +81,11 @@ function checkSlotsWin(results, betAmount) {
                               maxCount >= 4 ? slotMultipliers[bestSymbol] / 2 :
                               slotMultipliers[bestSymbol] / 5;
             winAmount = Math.floor(bets.slots * multiplier * (1 + winBonus));
-            itemName = `🎰 Выигрыш (${bestSymbol} x${maxCount})`;
             showMessage('slots', `🎉 ПОБЕДА! +${winAmount} монет! ${bestSymbol} x${maxCount}`, 'win');
             showNotification(`🎰 Выигрыш: +${winAmount} монет!`, 'win', 4000);
         }
 
-        addToBalance(winAmount, itemName);
+        addToBalance(winAmount);
         lastWin = winAmount;
     } else {
         reels.forEach(reel => reel.classList.add('loser'));

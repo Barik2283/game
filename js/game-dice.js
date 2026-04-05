@@ -40,8 +40,7 @@ function rollDice() {
 
         if (winMultiplier > 0) {
             const winAmount = bets.dice * winMultiplier;
-            const itemName = `🎲 Кости (${selectedDiceBet})`;
-            addToBalance(winAmount, itemName);
+            addToBalance(winAmount);
             lastWin = winAmount;
             showMessage('dice', `🎉 ПОБЕДА! ${winAmount}! 🎉`, 'win');
         } else {

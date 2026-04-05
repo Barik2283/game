@@ -103,7 +103,7 @@ function startBlackjack() {
 
     document.getElementById('hit-btn').disabled = false;
     document.getElementById('stand-btn').disabled = false;
-    
+
     updateBlackjackDisplay();
     showMessage('blackjack', 'Ваш ход!', 'win');
 
@@ -164,26 +164,25 @@ function endBlackjack(result) {
             break;
         case 'dealer_bust':
             winAmount = bets.blackjack * 2;
-            itemName = '🃏 Блэкджек (дилер перебрал)';
             showMessage('blackjack', `🎉 Дилер перебрал! Победа ${winAmount}! 🎉`, 'win');
             break;
         case 'win':
-            winAmount = bets.blackjack * 2;
-            itemName = '🃏 Блэкджек (победа)';
-            showMessage('blackjack', `🎉 Победа! ${winAmount}! 🎉`, 'win');
+            const playerTotal = calculateHand(playerHand);
+            const isBlackjack = playerHand.length === 2 && playerTotal === 21;
+            winAmount = isBlackjack ? Math.floor(bets.blackjack * 2.5) : bets.blackjack * 2;
+            showMessage('blackjack', isBlackjack ? `🎉 БЛЭКДЖЕК! Победа ${winAmount}! 🎉` : `🎉 Победа! ${winAmount}! 🎉`, 'win');
             break;
         case 'lose':
             showMessage('blackjack', 'Дилер выиграл!', 'lose');
             break;
         case 'push':
             winAmount = bets.blackjack;
-            itemName = '🃏 Блэкджек (ничья)';
             showMessage('blackjack', `Ничья! Возврат ${winAmount}`, 'win');
             break;
     }
 
     if (winAmount > 0) {
-        addToBalance(winAmount, itemName);
+        addToBalance(winAmount);
         lastWin = winAmount;
     }
 
