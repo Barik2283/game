@@ -91,17 +91,17 @@ function updateStats() {
     // Show/hide credit display
     const creditStat = document.getElementById('credit-stat');
     const creditDisplay = document.getElementById('credit-display');
-    const repayBtn = document.getElementById('repay-credit-btn');
+    const repayBtnTop = document.querySelector('.repay-btn');
 
-    if (creditStat && creditDisplay && repayBtn) {
+    if (creditStat && creditDisplay) {
         if (credit > 0) {
             creditStat.style.display = 'block';
             creditDisplay.textContent = credit;
-            repayBtn.style.display = 'inline-block';
+            if (repayBtnTop) repayBtnTop.style.display = 'inline-block';
         } else {
             creditStat.style.display = 'none';
             creditDisplay.textContent = '0';
-            repayBtn.style.display = 'none';
+            if (repayBtnTop) repayBtnTop.style.display = 'none';
         }
     }
 }
